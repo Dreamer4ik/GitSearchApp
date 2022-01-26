@@ -17,20 +17,18 @@ class TabBarViewController: UITabBarController {
     
     
     private func setUpControllers() {
-    
+        
         let home = HomeViewController()
         home.title = "Home"
-        let profile = HistoryViewController()
-        profile.title = "History"
+        let history = HistoryViewController()
+        history.title = "History"
         
         home.navigationItem.largeTitleDisplayMode = .always
-        profile.navigationItem.largeTitleDisplayMode = .always
         
         let nav1 = UINavigationController(rootViewController: home)
-        let nav2 = UINavigationController(rootViewController: profile)
+        let nav2 = UINavigationController(rootViewController: history)
         
         nav1.navigationBar.prefersLargeTitles = true
-        nav2.navigationBar.prefersLargeTitles = true
         
         nav1.tabBarItem = UITabBarItem(title: "Home", image: UIImage(systemName: "house"), tag: 1)
         nav2.tabBarItem = UITabBarItem(title: "History", image: UIImage(systemName: "book"), tag: 2)

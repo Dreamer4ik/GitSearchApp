@@ -8,14 +8,20 @@
 import UIKit
 
 class HistoryViewController: UIViewController {
-
+    
     override func viewDidLoad() {
         super.viewDidLoad()
-
+        
+        let barAppearance = UINavigationBarAppearance()
+        barAppearance.backgroundColor = .systemBackground
+        navigationItem.standardAppearance = barAppearance
+        navigationItem.scrollEdgeAppearance = barAppearance
+        
         view.backgroundColor = .systemBlue
+        title = "History"
     }
     
-
-
-
+    
+    
+    
 }

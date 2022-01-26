@@ -19,6 +19,7 @@
 		2C4585B927A03C6600CA6561 /* AuthManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2C4585B827A03C6600CA6561 /* AuthManager.swift */; };
 		2C4585BB27A03CF600CA6561 /* Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2C4585BA27A03CF600CA6561 /* Extension.swift */; };
 		2C4585BD27A03D5800CA6561 /* APICaller.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2C4585BC27A03D5800CA6561 /* APICaller.swift */; };
+		2CBD66B527A1446D004EC29A /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 2CBD66B427A1446D004EC29A /* GoogleService-Info.plist */; };
 		BA6726F9D524BDEC4C3AFA59 /* Pods_GitSearchApp.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0EF56285952A6A4F9ADC77B4 /* Pods_GitSearchApp.framework */; };
 /* End PBXBuildFile section */
 
@@ -40,6 +41,7 @@
 		2C4585B827A03C6600CA6561 /* AuthManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthManager.swift; sourceTree = "<group>"; };
 		2C4585BA27A03CF600CA6561 /* Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Extension.swift; sourceTree = "<group>"; };
 		2C4585BC27A03D5800CA6561 /* APICaller.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = APICaller.swift; sourceTree = "<group>"; };
+		2CBD66B427A1446D004EC29A /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -103,6 +105,7 @@
 				2C45859927A031E400CA6561 /* SceneDelegate.swift */,
 				2C4585BA27A03CF600CA6561 /* Extension.swift */,
 				2C4585A027A031E500CA6561 /* Assets.xcassets */,
+				2CBD66B427A1446D004EC29A /* GoogleService-Info.plist */,
 			);
 			path = Other;
 			sourceTree = "<group>";
@@ -146,7 +149,6 @@
 				2A275EE38DF5325BBE76E61D /* Pods-GitSearchApp.debug.xcconfig */,
 				277BD80AA079A0F7180AD769 /* Pods-GitSearchApp.release.xcconfig */,
 			);
-			name = Pods;
 			path = Pods;
 			sourceTree = "<group>";
 		};
@@ -212,6 +214,7 @@
 			files = (
 				2C4585A427A031E500CA6561 /* LaunchScreen.storyboard in Resources */,
 				2C4585A127A031E500CA6561 /* Assets.xcassets in Resources */,
+				2CBD66B527A1446D004EC29A /* GoogleService-Info.plist in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
