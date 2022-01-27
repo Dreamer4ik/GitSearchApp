@@ -22,7 +22,6 @@
 		2C53B8F627A290E100C5E3FC /* RepositoryCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2C53B8F527A290E100C5E3FC /* RepositoryCell.swift */; };
 		2C53B8F827A2947D00C5E3FC /* RepositoryHeaderTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2C53B8F727A2947D00C5E3FC /* RepositoryHeaderTableViewCell.swift */; };
 		2C53B8FA27A294A000C5E3FC /* GeneralTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2C53B8F927A294A000C5E3FC /* GeneralTableViewCell.swift */; };
-		2CBD66B527A1446D004EC29A /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 2CBD66B427A1446D004EC29A /* GoogleService-Info.plist */; };
 		BA6726F9D524BDEC4C3AFA59 /* Pods_GitSearchApp.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0EF56285952A6A4F9ADC77B4 /* Pods_GitSearchApp.framework */; };
 /* End PBXBuildFile section */
 
@@ -47,7 +46,6 @@
 		2C53B8F527A290E100C5E3FC /* RepositoryCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RepositoryCell.swift; sourceTree = "<group>"; };
 		2C53B8F727A2947D00C5E3FC /* RepositoryHeaderTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RepositoryHeaderTableViewCell.swift; sourceTree = "<group>"; };
 		2C53B8F927A294A000C5E3FC /* GeneralTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GeneralTableViewCell.swift; sourceTree = "<group>"; };
-		2CBD66B427A1446D004EC29A /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -111,7 +109,6 @@
 				2C45859927A031E400CA6561 /* SceneDelegate.swift */,
 				2C4585BA27A03CF600CA6561 /* Extension.swift */,
 				2C4585A027A031E500CA6561 /* Assets.xcassets */,
-				2CBD66B427A1446D004EC29A /* GoogleService-Info.plist */,
 			);
 			path = Other;
 			sourceTree = "<group>";
@@ -231,7 +228,6 @@
 			files = (
 				2C4585A427A031E500CA6561 /* LaunchScreen.storyboard in Resources */,
 				2C4585A127A031E500CA6561 /* Assets.xcassets in Resources */,
-				2CBD66B527A1446D004EC29A /* GoogleService-Info.plist in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

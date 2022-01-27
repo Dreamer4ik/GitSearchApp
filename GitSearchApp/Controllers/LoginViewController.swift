@@ -6,12 +6,10 @@
 //
 
 import UIKit
-import Firebase
-import FirebaseAuth
+
 
 class LoginViewController: UIViewController {
     
-    var gitProvider : OAuthProvider?
     
     private let imageView: UIImageView = {
         let imageView = UIImageView()
@@ -40,7 +38,6 @@ class LoginViewController: UIViewController {
         view.addSubview(loginButton)
         view.addSubview(imageView)
         
-        self.gitProvider = OAuthProvider(providerID: "github.com")
         
         loginButton.addTarget(self, action: #selector(didTapLogIn), for: .touchUpInside)
     }
@@ -67,41 +64,7 @@ class LoginViewController: UIViewController {
     
     @objc private func didTapLogIn() {
         
-        self.gitProvider?.getCredentialWith(nil) { credential, error in
-            
-            if error != nil {
-                // Handle error.
-            }
-            if let credential = credential  {
-                
-                Auth.auth().signIn(with: credential) { authResult, error in
-                    
-                    if error != nil {
-                        // Handle error.
-                    }
-                    // User is signed in.
-                    // IdP data available in authResult.additionalUserInfo.profile.
-                    DispatchQueue.main.async {
-                        if let authResult = authResult {
-                            guard let oauthCredential = authResult.credential as? OAuthCredential else { return }
-                            // GitHub OAuth access token can also be retrieved by:
-                            // oauthCredential.accessToken
-                            // GitHub OAuth ID token can be retrieved by calling:
-                            // oauthCredential.idToken
-                            
-                            //                            oauthCredential.accessToken
-                            //                            oauthCredential.idToken
-                            
-                        }
-                        
-                        let vc = TabBarViewController()
-                        vc.modalPresentationStyle = .fullScreen
-                        self.present(vc, animated: true, completion: nil)
-                    }
-                    
-                }
-            }
-        }
+
     }
     
 }

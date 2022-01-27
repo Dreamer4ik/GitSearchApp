@@ -8,11 +8,9 @@ target 'GitSearchApp' do
   # Pods for GitSearchApp
 
 # Firebase
-pod 'Firebase/Core'
-pod 'Firebase/Auth'
-pod 'Firebase/Database'
-pod 'Firebase/Analytics'
-pod 'Firebase/Crashlytics'
+pod 'Moya', '~> 15.0'
+pod 'Alamofire'
+pod 'SwiftyJSON'
 
 
 

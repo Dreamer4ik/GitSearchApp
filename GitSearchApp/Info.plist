@@ -6,11 +6,9 @@
 	<array>
 		<dict>
 			<key>CFBundleTypeRole</key>
-			<string>Editor</string>
+			<string>None</string>
 			<key>CFBundleURLSchemes</key>
-			<array>
-				<string>com.googleusercontent.apps.909056645018-gdndqn9aeu5j6hqjgeo0quec6118cv9g</string>
-			</array>
+			<array/>
 		</dict>
 	</array>
 	<key>UIApplicationSceneManifest</key>
