@@ -35,6 +35,8 @@ class HomeViewController: UIViewController {
         
         
         view.backgroundColor = .red
+        
+        searchBar.delegate = self
         addSubviews()
         fetchAllPublicRepo()
         
@@ -96,3 +98,13 @@ class HomeViewController: UIViewController {
     
 }
 
+extension HomeViewController: UISearchBarDelegate {
+    func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
+            guard let text = searchBar.text, !text.replacingOccurrences(of: " ", with: "").isEmpty else {
+                return
+            }
+            
+            searchBar.resignFirstResponder()
+            print("Text search: \(text)")
+        }
+}
