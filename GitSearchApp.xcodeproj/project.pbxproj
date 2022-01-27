@@ -19,6 +19,9 @@
 		2C4585B927A03C6600CA6561 /* AuthManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2C4585B827A03C6600CA6561 /* AuthManager.swift */; };
 		2C4585BB27A03CF600CA6561 /* Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2C4585BA27A03CF600CA6561 /* Extension.swift */; };
 		2C4585BD27A03D5800CA6561 /* APICaller.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2C4585BC27A03D5800CA6561 /* APICaller.swift */; };
+		2C53B8F627A290E100C5E3FC /* RepositoryCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2C53B8F527A290E100C5E3FC /* RepositoryCell.swift */; };
+		2C53B8F827A2947D00C5E3FC /* RepositoryHeaderTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2C53B8F727A2947D00C5E3FC /* RepositoryHeaderTableViewCell.swift */; };
+		2C53B8FA27A294A000C5E3FC /* GeneralTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2C53B8F927A294A000C5E3FC /* GeneralTableViewCell.swift */; };
 		2CBD66B527A1446D004EC29A /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 2CBD66B427A1446D004EC29A /* GoogleService-Info.plist */; };
 		BA6726F9D524BDEC4C3AFA59 /* Pods_GitSearchApp.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0EF56285952A6A4F9ADC77B4 /* Pods_GitSearchApp.framework */; };
 /* End PBXBuildFile section */
@@ -41,6 +44,9 @@
 		2C4585B827A03C6600CA6561 /* AuthManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthManager.swift; sourceTree = "<group>"; };
 		2C4585BA27A03CF600CA6561 /* Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Extension.swift; sourceTree = "<group>"; };
 		2C4585BC27A03D5800CA6561 /* APICaller.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = APICaller.swift; sourceTree = "<group>"; };
+		2C53B8F527A290E100C5E3FC /* RepositoryCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RepositoryCell.swift; sourceTree = "<group>"; };
+		2C53B8F727A2947D00C5E3FC /* RepositoryHeaderTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RepositoryHeaderTableViewCell.swift; sourceTree = "<group>"; };
+		2C53B8F927A294A000C5E3FC /* GeneralTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GeneralTableViewCell.swift; sourceTree = "<group>"; };
 		2CBD66B427A1446D004EC29A /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -123,6 +129,7 @@
 		2C4585B227A03A7500CA6561 /* Views */ = {
 			isa = PBXGroup;
 			children = (
+				2C53B8F427A290A900C5E3FC /* Cells */,
 				2C4585A227A031E500CA6561 /* LaunchScreen.storyboard */,
 			);
 			path = Views;
@@ -133,6 +140,16 @@
 			children = (
 			);
 			path = Models;
+			sourceTree = "<group>";
+		};
+		2C53B8F427A290A900C5E3FC /* Cells */ = {
+			isa = PBXGroup;
+			children = (
+				2C53B8F527A290E100C5E3FC /* RepositoryCell.swift */,
+				2C53B8F727A2947D00C5E3FC /* RepositoryHeaderTableViewCell.swift */,
+				2C53B8F927A294A000C5E3FC /* GeneralTableViewCell.swift */,
+			);
+			path = Cells;
 			sourceTree = "<group>";
 		};
 		80C4A626C5FC133F7B5F1FDC /* Frameworks */ = {
@@ -272,10 +289,13 @@
 				2C4585B927A03C6600CA6561 /* AuthManager.swift in Sources */,
 				2C4585BD27A03D5800CA6561 /* APICaller.swift in Sources */,
 				2C45859C27A031E400CA6561 /* HomeViewController.swift in Sources */,
+				2C53B8F627A290E100C5E3FC /* RepositoryCell.swift in Sources */,
 				2C45859827A031E400CA6561 /* AppDelegate.swift in Sources */,
+				2C53B8FA27A294A000C5E3FC /* GeneralTableViewCell.swift in Sources */,
 				2C45859A27A031E400CA6561 /* SceneDelegate.swift in Sources */,
 				2C4585AE27A0385B00CA6561 /* TabBarViewController.swift in Sources */,
 				2C4585AC27A0381100CA6561 /* HistoryViewController.swift in Sources */,
+				2C53B8F827A2947D00C5E3FC /* RepositoryHeaderTableViewCell.swift in Sources */,
 				2C4585B727A03BA800CA6561 /* DatabaseManager.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

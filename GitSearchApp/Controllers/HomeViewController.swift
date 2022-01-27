@@ -19,6 +19,8 @@ class HomeViewController: UIViewController {
         return bar
     }()
     
+    private var repositories = [Repository]()
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Log out",
@@ -34,6 +36,8 @@ class HomeViewController: UIViewController {
         
         view.backgroundColor = .red
         addSubviews()
+        fetchAllPublicRepo()
+        
     }
     
     private func addSubviews() {
@@ -44,6 +48,23 @@ class HomeViewController: UIViewController {
         super.viewDidLayoutSubviews()
         searchBar.frame = CGRect(x: 20, y: view.top + 150, width: view.width - 40, height: 35)
     }
+    
+    
+    private func fetchAllPublicRepo(){
+        APICaller.shared.getAllRepositories { [weak self] result in
+            switch result {
+            case .success(let repositories):
+//                self?.repositories = repositories
+                 print("Result: \(result)")
+                
+            case .failure(let error):
+                print("Error fetch public repo: \(error)")
+            }
+        }
+    }
+    
+    
+    
     
     
     
