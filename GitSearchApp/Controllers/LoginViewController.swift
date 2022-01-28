@@ -63,8 +63,10 @@ class LoginViewController: UIViewController {
     
     
     @objc private func didTapLogIn() {
-        
-
+        UserDefaults.standard.setValue(true, forKey: "LogIn")
+        let vc = TabBarViewController()
+        vc.modalPresentationStyle = .fullScreen
+        self.present(vc, animated: true, completion: nil)
     }
     
 }

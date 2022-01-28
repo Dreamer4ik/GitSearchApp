@@ -31,7 +31,7 @@ public class APICaller {
     func getData() -> [Response]{
         
         var responses = [Response]()
-        AF.request(Constants.urlString, method: .get).validate().responseDecodable(of: [Response].self) { response in
+        AF.request(Constants.urlString, method: .get).validate().responseJSON { response in
             switch response.result {
             case .success(let value):
                 let json = JSON(value)
@@ -79,12 +79,6 @@ public class APICaller {
         
         var viewModelsPack = ViewModelDataPack()
         for item in byResponcePack {
-            
-            //            let data = ["id": item.idStr, "name": item.nameSrt, "owner": item.ownerStr, "description": item.descriptionStr ?? "", "link": item.link ?? ""]
-            //
-            //            var pack = ViewModelDataPack()
-            //            pack.data = [andPage : (dict as! [String : String])]
-            
             viewModelsPack.idStr = item.idStr
             viewModelsPack.nameSrt = item.nameSrt
             viewModelsPack.ownerStr = item.ownerStr
@@ -98,21 +92,14 @@ public class APICaller {
     }
     
     func viewReposData(pagePack: [Int : [ViewModelDataPack]]) {
-        print(pagePack)
-//        allReposData[(pagePack.first?.key)!] = pagePack.first?.value
+//        print(pagePack)
+        allReposData[(pagePack.first?.key)!] = pagePack.first?.value
         
     }
     
     
   
 }
-
-
-
-
-
-
-
 
 
 struct Response: Codable {
