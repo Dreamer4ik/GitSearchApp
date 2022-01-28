@@ -6,64 +6,132 @@
 //
 
 import Foundation
+import Alamofire
+import SwiftyJSON
 
-final class APICaller {
+
+public class APICaller {
     static let shared = APICaller()
+    
+    /*
+     let headers: HTTPHeaders = [
+     "page": MY_API_KEY,
+     "Accept": "application/json"
+     ]
+     */
+    
+    var allReposData = [Int : [ViewModelDataPack]]()
     
     struct Constants{
         static let gitHubLinkURL = URL(string: "https://api.github.com/")
         static let allPublicRepoLinkURL = URL(string: "https://api.github.com/repositories")
+        static let urlString = "https://api.github.com/repositories"
     }
     
-
-    private init() {}
-     
-     public func getAllRepositories(completion: @escaping (Result<[Repository], Error>) -> Void) {
-         guard let url = Constants.allPublicRepoLinkURL else {
-             return
-         }
-
-         let task = URLSession.shared.dataTask(with: url) { data, _, error in
-             if let error = error {
-                 completion(.failure(error))
-             }
-             else if let data = data {
-                 do {
-                     let result = try JSONDecoder().decode(APIResponse.self, from: data)
-
-//                     print("Repositories: \(result.repositories.count)")
-                     completion(.success(result.repositories))
-                 }
-                 catch {
-                     completion(.failure(error))
-                 }
-             }
-         }
-         task.resume()
-     }
+    func getData() -> [Response]{
+        
+        var responses = [Response]()
+        AF.request(Constants.urlString, method: .get).validate().responseDecodable(of: [Response].self) { response in
+            switch response.result {
+            case .success(let value):
+                let json = JSON(value)
+                for index in 0...json.count {
+                    var currentResponse = Response()
+                    
+                    if let id = json[index]["id"].int {
+                        currentResponse.idStr = "\(id)"
+                    }
+                    
+                    if let name = json[index]["name"].string {
+                        currentResponse.nameSrt = "\(name)"
+                    }
+                    
+                    if let owner = json[index]["owner"]["login"].string {
+                        currentResponse.ownerStr = "\(owner)"
+                    }
+                    
+                    if let description = json[index]["description"].string {
+                        currentResponse.descriptionStr = "\(description)"
+                    }
+                    
+                    if let link = json[index]["url"].string  {
+                        currentResponse.link = "\(link)"
+                    }
+                    
+                    responses.append(currentResponse)
+                    
+                }
+                
+                print(responses.count)
+                self.presentReposData(byResponcePack: responses, andPage: 1)
+            case .failure(let error):
+                print(error)
+            }
+        }
+        return responses
+    }
     
     
+    func presentReposData(byResponcePack: [Response], andPage: Int) {
+        
+        var pageData = [ViewModelDataPack]()
+        
+        
+        var viewModelsPack = ViewModelDataPack()
+        for item in byResponcePack {
+            
+            //            let data = ["id": item.idStr, "name": item.nameSrt, "owner": item.ownerStr, "description": item.descriptionStr ?? "", "link": item.link ?? ""]
+            //
+            //            var pack = ViewModelDataPack()
+            //            pack.data = [andPage : (dict as! [String : String])]
+            
+            viewModelsPack.idStr = item.idStr
+            viewModelsPack.nameSrt = item.nameSrt
+            viewModelsPack.ownerStr = item.ownerStr
+            viewModelsPack.descriptionStr = item.descriptionStr
+            viewModelsPack.link = item.link
+            pageData.append(viewModelsPack)
+            
+        }
+        let pagePack = [andPage: pageData]
+        viewReposData(pagePack: pagePack)
+    }
+    
+    func viewReposData(pagePack: [Int : [ViewModelDataPack]]) {
+        print(pagePack)
+//        allReposData[(pagePack.first?.key)!] = pagePack.first?.value
+        
+    }
+    
+    
+  
 }
 
 
 
-//Models
-struct APIResponse: Codable {
-    let repositories: [Repository]
+
+
+
+
+
+
+struct Response: Codable {
+    var idStr: String!
+    var nameSrt: String!
+    var ownerStr: String!
+    
+    var descriptionStr: String?
+    var link: String?
     
 }
 
-struct Repository: Codable {
-    let user: User
-    let title: String
-    let description: String
-    let stargazers_url: String?
-    let contributors_url: String?
-    let languages_url: String?
-}
 
-
-struct User: Codable {
-    let nameOwner: String
-    let avatar_url: String?
+struct ViewModelDataPack: Codable {
+    var idStr: String!
+    var nameSrt: String!
+    var ownerStr: String!
+    
+    var descriptionStr: String?
+    var link: String?
+    
 }

@@ -18,7 +18,7 @@ class HomeViewController: UIViewController {
         return bar
     }()
     
-    private var repositories = [Repository]()
+//    private var repositories = [Repository]()
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -37,9 +37,12 @@ class HomeViewController: UIViewController {
         
         searchBar.delegate = self
         addSubviews()
-        fetchAllPublicRepo()
-        
+    
+        APICaller.shared.getData()
     }
+    
+   
+             
     
     private func addSubviews() {
         view.addSubview(searchBar)
@@ -51,18 +54,7 @@ class HomeViewController: UIViewController {
     }
     
     
-    private func fetchAllPublicRepo(){
-        APICaller.shared.getAllRepositories { [weak self] result in
-            switch result {
-            case .success(let repositories):
-//                self?.repositories = repositories
-                 print("Result: \(result)")
-                
-            case .failure(let error):
-                print("Error fetch public repo: \(error)")
-            }
-        }
-    }
+
     
     
     

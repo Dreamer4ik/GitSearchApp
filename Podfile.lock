@@ -1,27 +1,20 @@
 PODS:
   - Alamofire (5.5.0)
-  - Moya (15.0.0):
-    - Moya/Core (= 15.0.0)
-  - Moya/Core (15.0.0):
-    - Alamofire (~> 5.0)
   - SwiftyJSON (5.0.1)
 
 DEPENDENCIES:
   - Alamofire
-  - Moya (~> 15.0)
   - SwiftyJSON
 
 SPEC REPOS:
   trunk:
     - Alamofire
-    - Moya
     - SwiftyJSON
 
 SPEC CHECKSUMS:
   Alamofire: 1c4fb5369c3fe93d2857c780d8bbe09f06f97e7c
-  Moya: 138f0573e53411fb3dc17016add0b748dfbd78ee
   SwiftyJSON: 2f33a42c6fbc52764d96f13368585094bfd8aa5e
 
-PODFILE CHECKSUM: bf930a465c44cf32146d146e213cefffa159aa18
+PODFILE CHECKSUM: bb42d0a1352fe8026fc918c81ed0e499a86520ad
 
 COCOAPODS: 1.11.2
