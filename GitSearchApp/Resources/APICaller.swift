@@ -20,7 +20,7 @@ public class APICaller {
      ]
      */
     
-    var allReposData = [Int : [ViewModelDataPack]]()
+   
     
     struct Constants{
         static let gitHubLinkURL = URL(string: "https://api.github.com/")
@@ -88,17 +88,9 @@ public class APICaller {
             
         }
         let pagePack = [andPage: pageData]
-        viewReposData(pagePack: pagePack)
+        HomeViewController.shared.viewReposData(pagePack: pagePack)
     }
     
-    func viewReposData(pagePack: [Int : [ViewModelDataPack]]) {
-//        print(pagePack)
-        allReposData[(pagePack.first?.key)!] = pagePack.first?.value
-        
-    }
-    
-    
-  
 }
 
 

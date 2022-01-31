@@ -8,6 +8,14 @@
 import UIKit
 
 class HomeViewController: UIViewController {
+    static let shared = HomeViewController()
+    
+    
+    var allReposData = [Int : [ViewModelDataPack]]() {
+        didSet {
+            tableView.reloadData()
+        }
+    }
     
     private let searchBar:UISearchBar = {
         let bar = UISearchBar()
@@ -45,6 +53,10 @@ class HomeViewController: UIViewController {
         addSubviews()
         
         APICaller.shared.getData()
+        print("viewDidLoad allReposData element: \(allReposData)")
+        print("viewDidLoad allReposData elements \(allReposData.count)")
+        print("viewDidLoad allReposData isEmpty \(allReposData.isEmpty)")
+//        tableView.reloadData()
     }
     
     
@@ -63,9 +75,21 @@ class HomeViewController: UIViewController {
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
         searchBar.frame = CGRect(x: 20, y: view.top + 150, width: view.width - 40, height: 35)
-        tableView.frame = CGRect(x: 0, y: searchBar.bottom + 10, width: view.width, height: 40)
+        tableView.frame = CGRect(x: 0, y: searchBar.bottom + 10, width: view.width, height: view.height)
     }
     
+    //MARK:  Data
+    
+    func viewReposData(pagePack: [Int : [ViewModelDataPack]]) {
+//        print(pagePack)
+        allReposData[(pagePack.first?.key)!] = pagePack.first?.value
+        
+//        print("pagePack.first?.value :\(pagePack.first?.value)")
+        print("Func viewReposData  allReposData elements: \(allReposData.count)")
+        print("viewReposData allReposData isEmpty \(allReposData.isEmpty)")
+        
+    }
+
     
     ///Log out
     @objc private func didTapLogOut() {
@@ -96,41 +120,54 @@ extension HomeViewController: UISearchBarDelegate {
     }
 }
 
-//MARK: TABLE
-var sharedAllRepos = APICaller.shared.allReposData
+//MARK: Table View
+//var sharedAllRepos = APICaller.shared.allReposData
 
 extension HomeViewController: UITableViewDelegate, UITableViewDataSource {
+    
+    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+        return 190
+    }
+    
     func numberOfSections(in tableView: UITableView) -> Int {
-        return sharedAllRepos.count
+//        print("allReposData numberOfSections \(allReposData.count)")
+//        return allReposData.count
+        print("numberOfSections  allReposData elements: \(allReposData.count)")
+        print("numberOfSections allReposData isEmpty \(allReposData.isEmpty)")
+        return 5
     }
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        guard let dataInSection = sharedAllRepos[section+1] as [ViewModelDataPack]? else {
-            return 0
-        }
-        
-        return dataInSection.count
+//        guard let dataInSection = allReposData[section+1] as [ViewModelDataPack]? else {
+//            return 0
+//        }
+//        print("dataInSection numberOfRowsInSection \(dataInSection.count)")
+//        return dataInSection.count
+        return 6
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         
-        guard let dataInSection = sharedAllRepos[indexPath.section+1] as [ViewModelDataPack]? else {
-            return UITableViewCell()
-        }
+//        guard let dataInSection = allReposData[indexPath.section+1] as [ViewModelDataPack]? else {
+//            return UITableViewCell()
+//        }
+//
+//        guard let currentData = dataInSection[indexPath.row] as ViewModelDataPack? else {
+//            return UITableViewCell()
+//        }
+//
+//
+//
+//        guard let cell = tableView.dequeueReusableCell(withIdentifier: RepositoryCell.identifier, for: indexPath) as? RepositoryCell else {
+//            fatalError()
+//        }
+//
+//        cell.config(withId: currentData.idStr, name: currentData.nameSrt, owner: currentData.ownerStr, andDescription: currentData.descriptionStr ?? "Not description")
         
-        guard let currentData = dataInSection[indexPath.row] as ViewModelDataPack? else {
-            return UITableViewCell()
-        }
         
-       
+//        return cell
         
-        guard let cell = tableView.dequeueReusableCell(withIdentifier: RepositoryCell.identifier, for: indexPath) as? RepositoryCell else {
-            fatalError()
-        }
-        cell.config(withId: currentData.idStr, name: currentData.nameSrt, owner: currentData.ownerStr, andDescription: currentData.descriptionStr ?? "Not description")
-        
-        
-        return cell
+        return UITableViewCell()
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {

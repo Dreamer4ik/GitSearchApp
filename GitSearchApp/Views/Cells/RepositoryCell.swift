@@ -95,18 +95,19 @@ class RepositoryCell: UITableViewCell {
         
     }
     
+    func config(withId: String, name: String, owner:String, andDescription: String) {
+        idLabel.text = withId
+        nameLabel.text = name
+        ownerLabel.text = owner
+        repoDescriptionLabel.text = andDescription
+    }
+    
+    
     private func addSubViews(){
         contentView.addSubview(idLabel)
         contentView.addSubview(nameLabel)
         contentView.addSubview(ownerLabel)
         contentView.addSubview(repoDescriptionLabel)
         
-    }
-    
-    func config(withId: String, name: String, owner:String, andDescription: String) {
-        idLabel.text = withId
-        nameLabel.text = name
-        ownerLabel.text = owner
-        repoDescriptionLabel.text = andDescription
     }
 }
