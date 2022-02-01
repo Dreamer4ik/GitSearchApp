@@ -56,32 +56,30 @@ class RepositoryCell: UITableViewCell {
         
         idLabel.frame = CGRect(
             x: 10,
-            y: 0,
+            y: contentView.top + 20,
             width: contentView.frame.size.width - 20,
-            height: 70
+            height: 20
         )
         
         ownerLabel.frame = CGRect(
             x: 10,
-            y: idLabel.bottom + 10,
+            y: idLabel.bottom + 5,
             width: contentView.frame.size.width - 20,
-            height: 70
+            height: 20
         )
         
         nameLabel.frame = CGRect(
             x: 10,
-            y: ownerLabel.bottom + 10,
+            y: ownerLabel.bottom + 5,
             width: contentView.frame.size.width - 20,
-            height: 70
+            height: 20
         )
-        
-       
-        
+ 
         repoDescriptionLabel.frame = CGRect(
             x: 10,
-            y: nameLabel.bottom + 10,
+            y: nameLabel.bottom + 5,
             width: contentView.frame.size.width - 20,
-            height: 70
+            height: 90
         )
         
     }

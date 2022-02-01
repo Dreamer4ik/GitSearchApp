@@ -6,16 +6,15 @@
 //
 
 import UIKit
+import Alamofire
+import SwiftyJSON
 
 class HomeViewController: UIViewController {
     static let shared = HomeViewController()
     
     
-    var allReposData = [Int : [ViewModelDataPack]]() {
-        didSet {
-            tableView.reloadData()
-        }
-    }
+    var allReposData = [ViewModelDataPack]()
+//    var searchData = [ViewModelDataPack]()
     
     private let searchBar:UISearchBar = {
         let bar = UISearchBar()
@@ -51,14 +50,26 @@ class HomeViewController: UIViewController {
         searchBar.delegate = self
         setUpTableView()
         addSubviews()
-        
-        APICaller.shared.getData()
-        print("viewDidLoad allReposData element: \(allReposData)")
+  
+        getData()
+//        getDataSearch()
+        //        print("viewDidLoad allReposData element: \(allReposData)")
         print("viewDidLoad allReposData elements \(allReposData.count)")
         print("viewDidLoad allReposData isEmpty \(allReposData.isEmpty)")
-//        tableView.reloadData()
+        
     }
     
+    struct Constants{
+        static let gitHubLinkURL = URL(string: "https://api.github.com/")
+        static let allPublicRepoLinkURL = URL(string: "https://api.github.com/repositories")
+        static let urlString = "https://api.github.com/repositories"
+        
+//        static let urlString = "https://api.github.com/search/repositories?q=Blogapp&per_page=15"
+
+    }
+    
+    
+   
     
     
     
@@ -80,16 +91,136 @@ class HomeViewController: UIViewController {
     
     //MARK:  Data
     
-    func viewReposData(pagePack: [Int : [ViewModelDataPack]]) {
-//        print(pagePack)
-        allReposData[(pagePack.first?.key)!] = pagePack.first?.value
-        
-//        print("pagePack.first?.value :\(pagePack.first?.value)")
-        print("Func viewReposData  allReposData elements: \(allReposData.count)")
-        print("viewReposData allReposData isEmpty \(allReposData.isEmpty)")
-        
-    }
+//        func getDataSearch() -> [Response]{
+//
+//            var responses = [Response]()
+//            AF.request(Constants.urlString, method: .get).responseDecodable(of: SearchResponse.self, completionHandler: { response in
+//
+//                switch response.result {
+//                case .success(let value):
+//
+//                    let json = JSON(value)
+//
+//
+//
+//                    var pageData = [ViewModelDataPack]()
+//                    var viewModelsPack = ViewModelDataPack()
+//
+//                    for index in 0...json.count {
+//                        var currentResponse = Response()
+//
+//
+//                        if let id = json[index]["id"].int {
+//                            currentResponse.idStr = "\(id)"
+//                        }
+//
+//                        if let name = json[index]["name"].string {
+//                            currentResponse.nameSrt = "\(name)"
+//                        }
+//
+//                        if let owner = json[index]["owner"]["login"].string {
+//                            currentResponse.ownerStr = "\(owner)"
+//                        }
+//
+//                        if let description = json[index]["description"].string {
+//                            currentResponse.descriptionStr = "\(description)"
+//                        }
+//
+//                        if let link = json[index]["url"].string  {
+//                            currentResponse.link = "\(link)"
+//                        }
+//
+//                        responses.append(currentResponse)
+//
+//
+//                    }
+//                    print(responses)
+//                    print(responses.count)
+//
+//                    for item in responses {
+//
+//                        viewModelsPack.idStr = item.idStr
+//                        viewModelsPack.nameSrt = item.nameSrt
+//                        viewModelsPack.ownerStr = item.ownerStr
+//                        viewModelsPack.descriptionStr = item.descriptionStr
+//                        viewModelsPack.link = item.link
+//
+//                        pageData.append(viewModelsPack)
+//
+//                    }
+//                    self.allReposData = pageData
+//                    self.tableView.reloadData()
+//
+//                case .failure(let error):
+//                    print(error)
+//                }
+//            })
+//            return responses
+//        }
+//
+    
+    func getData() -> [Response]{
 
+        var responses = [Response]()
+        AF.request(Constants.urlString, method: .get).validate().responseJSON { response in
+            switch response.result {
+            case .success(let value):
+
+                let json = JSON(value)
+
+                var pageData = [ViewModelDataPack]()
+                var viewModelsPack = ViewModelDataPack()
+
+                for index in 0...json.count {
+                    var currentResponse = Response()
+
+                    if let id = json[index]["id"].int {
+                        currentResponse.idStr = "\(id)"
+                    }
+
+                    if let name = json[index]["name"].string {
+                        currentResponse.nameSrt = "\(name)"
+                    }
+
+                    if let owner = json[index]["owner"]["login"].string {
+                        currentResponse.ownerStr = "\(owner)"
+                    }
+
+                    if let description = json[index]["description"].string {
+                        currentResponse.descriptionStr = "\(description)"
+                    }
+
+                    if let link = json[index]["url"].string  {
+                        currentResponse.link = "\(link)"
+                    }
+
+                    responses.append(currentResponse)
+
+                }
+
+                print(responses.count)
+
+                for item in responses {
+                    viewModelsPack.idStr = item.idStr
+                    viewModelsPack.nameSrt = item.nameSrt
+                    viewModelsPack.ownerStr = item.ownerStr
+                    viewModelsPack.descriptionStr = item.descriptionStr
+                    viewModelsPack.link = item.link
+                    pageData.append(viewModelsPack)
+
+                }
+                self.allReposData = pageData
+                self.tableView.reloadData()
+
+            case .failure(let error):
+                print(error)
+            }
+        }
+        return responses
+    }
+    
+
+    
     
     ///Log out
     @objc private func didTapLogOut() {
@@ -115,13 +246,14 @@ extension HomeViewController: UISearchBarDelegate {
             return
         }
         
+        //Add func with (query: text)
+        
         searchBar.resignFirstResponder()
         print("Text search: \(text)")
     }
 }
 
 //MARK: Table View
-//var sharedAllRepos = APICaller.shared.allReposData
 
 extension HomeViewController: UITableViewDelegate, UITableViewDataSource {
     
@@ -129,45 +261,30 @@ extension HomeViewController: UITableViewDelegate, UITableViewDataSource {
         return 190
     }
     
-    func numberOfSections(in tableView: UITableView) -> Int {
-//        print("allReposData numberOfSections \(allReposData.count)")
-//        return allReposData.count
-        print("numberOfSections  allReposData elements: \(allReposData.count)")
-        print("numberOfSections allReposData isEmpty \(allReposData.isEmpty)")
-        return 5
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        
+        return allReposData.count
     }
     
-    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-//        guard let dataInSection = allReposData[section+1] as [ViewModelDataPack]? else {
-//            return 0
-//        }
-//        print("dataInSection numberOfRowsInSection \(dataInSection.count)")
-//        return dataInSection.count
-        return 6
-    }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         
-//        guard let dataInSection = allReposData[indexPath.section+1] as [ViewModelDataPack]? else {
-//            return UITableViewCell()
-//        }
-//
-//        guard let currentData = dataInSection[indexPath.row] as ViewModelDataPack? else {
-//            return UITableViewCell()
-//        }
-//
-//
-//
-//        guard let cell = tableView.dequeueReusableCell(withIdentifier: RepositoryCell.identifier, for: indexPath) as? RepositoryCell else {
-//            fatalError()
-//        }
-//
-//        cell.config(withId: currentData.idStr, name: currentData.nameSrt, owner: currentData.ownerStr, andDescription: currentData.descriptionStr ?? "Not description")
+        guard let cell = tableView.dequeueReusableCell(withIdentifier: RepositoryCell.identifier, for: indexPath) as? RepositoryCell else {
+            fatalError()
+        }
+        
+        guard let id = allReposData[indexPath.row].idStr,
+              let name = allReposData[indexPath.row].nameSrt,
+              let owner = allReposData[indexPath.row].ownerStr,
+              let description = allReposData[indexPath.row].descriptionStr else {
+                  return UITableViewCell()
+              }
         
         
-//        return cell
+        cell.config(withId: id, name: name, owner: owner, andDescription: description )
         
-        return UITableViewCell()
+        return cell
+        
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
