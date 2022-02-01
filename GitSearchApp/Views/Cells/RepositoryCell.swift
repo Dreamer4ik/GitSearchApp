@@ -16,28 +16,28 @@ class RepositoryCell: UITableViewCell {
     private let idLabel: UILabel = {
         let label = UILabel()
         label.numberOfLines = 0
-        label.font = .systemFont(ofSize: 15, weight: .medium)
+        label.font = .systemFont(ofSize: 18, weight: .medium)
         return label
     }()
     
     private let nameLabel: UILabel = {
         let label = UILabel()
         label.numberOfLines = 0
-        label.font = .systemFont(ofSize: 15, weight: .medium)
+        label.font = .systemFont(ofSize: 16, weight: .bold)
         return label
     }()
     
     private let ownerLabel: UILabel = {
         let label = UILabel()
         label.numberOfLines = 0
-        label.font = .systemFont(ofSize: 15, weight: .medium)
+        label.font = .systemFont(ofSize: 18, weight: .heavy)
         return label
     }()
     
     private let repoDescriptionLabel: UILabel = {
         let label = UILabel()
         label.numberOfLines = 0
-        label.font = .systemFont(ofSize: 15, weight: .medium)
+        label.font = .systemFont(ofSize: 15, weight: .regular)
         return label
     }()
     
@@ -76,8 +76,8 @@ class RepositoryCell: UITableViewCell {
         )
  
         repoDescriptionLabel.frame = CGRect(
-            x: 10,
-            y: nameLabel.bottom + 5,
+            x: 20,
+            y: nameLabel.bottom ,
             width: contentView.frame.size.width - 20,
             height: 90
         )
