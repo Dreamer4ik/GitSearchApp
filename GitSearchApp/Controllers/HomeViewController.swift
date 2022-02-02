@@ -268,9 +268,18 @@ extension HomeViewController: UISearchBarDelegate {
         searchBar.resignFirstResponder()
         print("Text search: \(text)")
         
-        //Add func with (query: text)
+        //TODO: Add func with (query: text)
+//        static let urlString = "https://api.github.com/search/repositories?q=&page=&per_page=15"
         
-        
+        APICaller.shared.getSearch(query: text, page: 1, endScroll: false) { [weak self] result, _  in
+            switch result {
+                let url = "https://api.github.com/search/repositories?q=\(query)&page=\(page)&per_page=15"
+                
+                print(url)
+            default:
+                print("")
+            }
+        }
     }
 }
 

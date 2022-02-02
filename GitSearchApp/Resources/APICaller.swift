@@ -29,19 +29,28 @@ public class APICaller {
 //    }
 
     
-
+    //(completion: @escaping (Result<[Article], Error>) -> Void)
+    //func fetchRecipesData(completion : @escaping ([recipe]?, Error?)->()){
+    
+    public func getSearch(query: String, page: Int, endScroll: Bool, completion : @escaping ([Response], Error) -> ()){
+        
+       
+    }
     
 }
 
 
-struct SearchResponse: Codable {
+
+
+
+public struct SearchResponse: Codable {
     let total_count:  Int
     let incomplete_results: Bool
     let items: [Response]
     
 }
 
- struct Response: Codable {
+public struct Response: Codable {
     var idStr: String!
     var nameSrt: String!
     var ownerStr: String!
@@ -51,7 +60,7 @@ struct SearchResponse: Codable {
 }
 
 
- struct ViewModelDataPack: Codable {
+public struct ViewModelDataPack: Codable {
     var idStr: String!
     var nameSrt: String!
     var ownerStr: String!
