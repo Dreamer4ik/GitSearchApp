@@ -44,7 +44,7 @@ struct SearchResponse: Codable {
     var nameSrt: String!
     var ownerStr: String!
     
-    var descriptionStr: String?
+    var descriptionStr: String? = ""
     var link: String?
     
 }
@@ -55,7 +55,7 @@ struct SearchResponse: Codable {
     var nameSrt: String!
     var ownerStr: String!
     
-    var descriptionStr: String?
+    var descriptionStr: String? = "" 
     var link: String?
     
 }
