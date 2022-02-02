@@ -35,6 +35,8 @@ public class APICaller {
 
 
 struct SearchResponse: Codable {
+    let total_count:  Int
+    let incomplete_results: Bool
     let items: [Response]
     
 }
@@ -46,7 +48,6 @@ struct SearchResponse: Codable {
     
     var descriptionStr: String? = ""
     var link: String?
-    
 }
 
 
@@ -55,7 +56,7 @@ struct SearchResponse: Codable {
     var nameSrt: String!
     var ownerStr: String!
     
-    var descriptionStr: String? = "" 
+    var descriptionStr: String? = ""
     var link: String?
     
 }

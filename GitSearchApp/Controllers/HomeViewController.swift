@@ -52,9 +52,9 @@ class HomeViewController: UIViewController {
         setUpTableView()
         addSubviews()
         
-//        getData()
-    
-                getDataSearch()
+        //        getData()
+        getDataSearch()
+        
         //        print("viewDidLoad allReposData element: \(allReposData)")
         print("viewDidLoad allReposData elements \(allReposData.count)")
         print("viewDidLoad allReposData isEmpty \(allReposData.isEmpty)")
@@ -64,9 +64,9 @@ class HomeViewController: UIViewController {
     struct Constants{
         static let gitHubLinkURL = URL(string: "https://api.github.com/")
         static let allPublicRepoLinkURL = URL(string: "https://api.github.com/repositories")
-//        static let urlString = "https://api.github.com/repositories"
+        //        static let urlString = "https://api.github.com/repositories"
         
-                static let urlString = "https://api.github.com/search/repositories?q=Blogapp&per_page=15"
+        static let urlString = "https://api.github.com/search/repositories?q=Blogapp&page=1&per_page=15"
         
     }
     
@@ -92,134 +92,151 @@ class HomeViewController: UIViewController {
     }
     
     //MARK:  Data
-    
-            func getDataSearch() -> [Response]{
-    
-                var responses = [Response]()
-                AF.request(Constants.urlString, method: .get).responseDecodable(of: SearchResponse.self, completionHandler: { response in
-    
-                    switch response.result {
-                    case .success(let value):
-    
-                        let json = JSON(value)
-    
-    
-    
-                        var pageData = [ViewModelDataPack]()
-                        var viewModelsPack = ViewModelDataPack()
-    
-                        for index in 0...json.count {
-                            var currentResponse = Response()
-    
-    
-                            if let id = json[index]["id"].int {
-                                currentResponse.idStr = "\(id)"
-                            }
-    
-                            if let name = json[index]["name"].string {
-                                currentResponse.nameSrt = "\(name)"
-                            }
-    
-                            if let owner = json[index]["owner"]["login"].string {
-                                currentResponse.ownerStr = "\(owner)"
-                            }
-    
-                            if let description = json[index]["description"].string {
-                                currentResponse.descriptionStr = "\(description)"
-                            }
-    
-                            if let link = json[index]["html_url"].string  {
-                                currentResponse.link = "\(link)"
-                            }
-    
-                            responses.append(currentResponse)
+    //    func getDataSearch() -> [Response]{
+    //
+    //        var responses = [Response]()
+    //        var responses = [SearchResponse]()
+    //        AF.request(Constants.urlString, method: .get).responseDecodable(of: SearchResponse.self, completionHandler: { response in
+    //            if let searchResponse = response.value {
+    //                switch searchResponse.items {
+    //            case .success:
+    //
+    //                    guard let searchResult: SearchResponse = searchResponse.items else { return }
+    //                    print(searchResult.items)
+    //
+    //
+    //
+    //
+    //            case .failure(let error):
+    //                print(error)
+    //            }
+    //            }
+    //        })
+    //        return responses
+    //    }
     
     
-                        }
-                        print(responses)
-                        print(responses.count)
     
-                        for item in responses {
-    
-                            viewModelsPack.idStr = item.idStr
-                            viewModelsPack.nameSrt = item.nameSrt
-                            viewModelsPack.ownerStr = item.ownerStr
-                            viewModelsPack.descriptionStr = item.descriptionStr
-                            viewModelsPack.link = item.link
-    
-                            pageData.append(viewModelsPack)
-    
-                        }
-                        self.allReposData = pageData
-                        self.tableView.reloadData()
-    
-                    case .failure(let error):
-                        print(error)
+    func getDataSearch() -> [Response]{
+        
+        var responsesArray = [Response]()
+        
+        AF.request(Constants.urlString, method: .get).responseDecodable(of: SearchResponse.self) { (response) in
+            switch response.result {
+            case let .success(_):
+                
+                var pageData = [ViewModelDataPack]()
+                var viewModelsPack = ViewModelDataPack()
+                guard let responseData = response.value else {
+                    return
+                }
+                for item in responseData.items {
+                    /*
+                     id name owner description link
+                     */
+                    var currentResponse = Response()
+                    if let id = item.idStr {
+                        currentResponse.idStr = "\(id)"
                     }
-                })
-                return responses
+                    if let name = item.nameSrt {
+                        currentResponse.nameSrt = "\(name)"
+                    }
+                    if let owner = item.ownerStr {
+                        currentResponse.ownerStr = "\(owner)"
+                    }
+                    if let description = item.descriptionStr {
+                        currentResponse.descriptionStr = "\(description)"
+                    }
+                    if let link = item.link {
+                        currentResponse.link = "\(link)"
+                    }
+        
+                    responsesArray.append(currentResponse)
+                }
+                
+                print(responsesArray.count)
+                
+                for item in responsesArray {
+                    viewModelsPack.idStr = item.idStr
+                    viewModelsPack.nameSrt = item.nameSrt
+                    viewModelsPack.ownerStr = item.ownerStr
+                    viewModelsPack.descriptionStr = item.descriptionStr
+                    viewModelsPack.link = item.link
+                    pageData.append(viewModelsPack)
+                    
+                }
+                self.allReposData = pageData
+                self.tableView.reloadData()
+                print(self.allReposData)
+                
+            case let .failure(error):
+                
+                print(error)
             }
+            
+        }
+        return responsesArray
+    }
     
-    
-//    func getData() -> [Response]{
-//
-//        var responses = [Response]()
-//        AF.request(Constants.urlString, method: .get).validate().responseJSON { response in
-//            switch response.result {
-//            case .success(let value):
-//
-//                let json = JSON(value)
-//
-//                var pageData = [ViewModelDataPack]()
-//                var viewModelsPack = ViewModelDataPack()
-//
-//                for index in 0...json.count {
-//                    var currentResponse = Response()
-//
-//                    if let id = json[index]["id"].int {
-//                        currentResponse.idStr = "\(id)"
-//                    }
-//
-//                    if let name = json[index]["name"].string {
-//                        currentResponse.nameSrt = "\(name)"
-//                    }
-//
-//                    if let owner = json[index]["owner"]["login"].string {
-//                        currentResponse.ownerStr = "\(owner)"
-//                    }
-//
-//                    if let description = json[index]["description"].string {
-//                        currentResponse.descriptionStr = "\(description)"
-//                    }
-//
-//                    if let link = json[index]["html_url"].string  {
-//                        currentResponse.link = "\(link)"
-//                    }
-//
-//                    responses.append(currentResponse)
-//
-//                }
-//
-//                print(responses.count)
-//
-//                for item in responses {
-//                    viewModelsPack.idStr = item.idStr
-//                    viewModelsPack.nameSrt = item.nameSrt
-//                    viewModelsPack.ownerStr = item.ownerStr
-//                    viewModelsPack.descriptionStr = item.descriptionStr
-//                    viewModelsPack.link = item.link
-//                    pageData.append(viewModelsPack)
-//
-//                }
-//                self.allReposData = pageData
-//                self.tableView.reloadData()
-//                print(self.allReposData)
-//            case .failure(let error):
-//                print(error)
-//            }
-//        }
-//        return responses
-//    }
+    //    func getData() -> [Response]{
+    //
+    //        var responses = [Response]()
+    //        AF.request(Constants.urlString, method: .get).validate().responseJSON { response in
+    //            switch response.result {
+    //            case .success(let value):
+    //
+    //                let json = JSON(value)
+    //
+    //                var pageData = [ViewModelDataPack]()
+    //                var viewModelsPack = ViewModelDataPack()
+    //
+    //                for index in 0...json.count {
+    //                    var currentResponse = Response()
+    //
+    //                    if let id = json[index]["id"].int {
+    //                        currentResponse.idStr = "\(id)"
+    //                    }
+    //
+    //                    if let name = json[index]["name"].string {
+    //                        currentResponse.nameSrt = "\(name)"
+    //                    }
+    //
+    //                    if let owner = json[index]["owner"]["login"].string {
+    //                        currentResponse.ownerStr = "\(owner)"
+    //                    }
+    //
+    //                    if let description = json[index]["description"].string {
+    //                        currentResponse.descriptionStr = "\(description)"
+    //                    }
+    //
+    //                    if let link = json[index]["html_url"].string  {
+    //                        currentResponse.link = "\(link)"
+    //                    }
+    //
+    //                    responses.append(currentResponse)
+    //
+    //                }
+    //
+    //                print(responses.count)
+    //
+    //                for item in responses {
+    //                    viewModelsPack.idStr = item.idStr
+    //                    viewModelsPack.nameSrt = item.nameSrt
+    //                    viewModelsPack.ownerStr = item.ownerStr
+    //                    viewModelsPack.descriptionStr = item.descriptionStr
+    //                    viewModelsPack.link = item.link
+    //                    pageData.append(viewModelsPack)
+    //
+    //                }
+    //                self.allReposData = pageData
+    //                self.tableView.reloadData()
+    //                print(self.allReposData)
+    //            case .failure(let error):
+    //                print(error)
+    //            }
+    //        }
+    //        return responses
+    //    }
     
     
     
@@ -290,7 +307,7 @@ extension HomeViewController: UITableViewDelegate, UITableViewDataSource {
         return cell
         
     }
-
+    
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
         
@@ -304,6 +321,6 @@ extension HomeViewController: UITableViewDelegate, UITableViewDataSource {
         present(vc, animated: true)
     }
     
-
+    
     
 }
