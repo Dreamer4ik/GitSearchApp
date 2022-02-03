@@ -8,19 +8,21 @@
 import Foundation
 
 struct SearchResponse: Codable {
-   let items: [RepositoryInfo]
-   
+    let items: [RepositoryInfo]
+    
 }
 
 struct RepositoryInfo: Codable {
-   let id: Int
-   let name: String
-   let owner: Owner
+    let id: Int
+    let name: String
+    let owner: Owner
     
-   var description: String?
-   let html_url: String?
+    var description: String?
+    let html_url: String?
+    
+    let stargazers_count: Int
 }
 
 struct Owner: Codable {
-   let login: String
+    let login: String
 }

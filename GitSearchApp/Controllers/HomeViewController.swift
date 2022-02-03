@@ -156,6 +156,10 @@ class HomeViewController: UIViewController {
             case .success(let value):
   
                 self.searchData = value.items
+                
+                self.searchData.sort {
+                    $0.stargazers_count > $1.stargazers_count
+                }
                 self.searchDataAll.append(contentsOf: self.searchData)
                 
             case .failure(let error):
@@ -266,6 +270,8 @@ extension HomeViewController: UITableViewDelegate, UITableViewDataSource {
             let name = searchDataAll[indexPath.row].name
             let owner = searchDataAll[indexPath.row].owner.login
             let description = searchDataAll[indexPath.row].description ?? ""
+            let stargazersCount = searchDataAll[indexPath.row].stargazers_count
+            print("stargazersCount:\(stargazersCount)")
             cell.config(withId: String(id), name: name, owner: owner, andDescription: description)
             
             
