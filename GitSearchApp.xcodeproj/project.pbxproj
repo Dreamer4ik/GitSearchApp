@@ -8,8 +8,6 @@
 
 /* Begin PBXBuildFile section */
 		2C129E4B27A3E245000F5E95 /* APICaller.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2C129E4A27A3E245000F5E95 /* APICaller.swift */; };
-		2C3785EF27A2D1EB00CD821F /* RepoModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2C3785EE27A2D1EB00CD821F /* RepoModel.swift */; };
-		2C3785F127A2D79100CD821F /* ResponseModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2C3785F027A2D79100CD821F /* ResponseModel.swift */; };
 		2C45859827A031E400CA6561 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2C45859727A031E400CA6561 /* AppDelegate.swift */; };
 		2C45859A27A031E400CA6561 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2C45859927A031E400CA6561 /* SceneDelegate.swift */; };
 		2C45859C27A031E400CA6561 /* HomeViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2C45859B27A031E400CA6561 /* HomeViewController.swift */; };
@@ -22,8 +20,10 @@
 		2C4585B927A03C6600CA6561 /* AuthManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2C4585B827A03C6600CA6561 /* AuthManager.swift */; };
 		2C4585BB27A03CF600CA6561 /* Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2C4585BA27A03CF600CA6561 /* Extension.swift */; };
 		2C53B8F627A290E100C5E3FC /* RepositoryCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2C53B8F527A290E100C5E3FC /* RepositoryCell.swift */; };
-		2C53B8F827A2947D00C5E3FC /* RepositoryHeaderTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2C53B8F727A2947D00C5E3FC /* RepositoryHeaderTableViewCell.swift */; };
-		2C53B8FA27A294A000C5E3FC /* GeneralTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2C53B8F927A294A000C5E3FC /* GeneralTableViewCell.swift */; };
+		2C6645C027AC0A7E00C739AA /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2C6645BF27AC0A7E00C739AA /* Constants.swift */; };
+		2C6645C227AC0C5B00C739AA /* RepositoryInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2C6645C127AC0C5B00C739AA /* RepositoryInfo.swift */; };
+		2C6645C427AC0C7500C739AA /* Response.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2C6645C327AC0C7500C739AA /* Response.swift */; };
+		2C6645C627AC0C8700C739AA /* ViewModelDataPack.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2C6645C527AC0C8700C739AA /* ViewModelDataPack.swift */; };
 		BA6726F9D524BDEC4C3AFA59 /* Pods_GitSearchApp.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0EF56285952A6A4F9ADC77B4 /* Pods_GitSearchApp.framework */; };
 /* End PBXBuildFile section */
 
@@ -32,8 +32,6 @@
 		277BD80AA079A0F7180AD769 /* Pods-GitSearchApp.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-GitSearchApp.release.xcconfig"; path = "Target Support Files/Pods-GitSearchApp/Pods-GitSearchApp.release.xcconfig"; sourceTree = "<group>"; };
 		2A275EE38DF5325BBE76E61D /* Pods-GitSearchApp.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-GitSearchApp.debug.xcconfig"; path = "Target Support Files/Pods-GitSearchApp/Pods-GitSearchApp.debug.xcconfig"; sourceTree = "<group>"; };
 		2C129E4A27A3E245000F5E95 /* APICaller.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = APICaller.swift; sourceTree = "<group>"; };
-		2C3785EE27A2D1EB00CD821F /* RepoModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RepoModel.swift; sourceTree = "<group>"; };
-		2C3785F027A2D79100CD821F /* ResponseModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ResponseModel.swift; sourceTree = "<group>"; };
 		2C45859427A031E400CA6561 /* GitSearchApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = GitSearchApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		2C45859727A031E400CA6561 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		2C45859927A031E400CA6561 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -48,8 +46,10 @@
 		2C4585B827A03C6600CA6561 /* AuthManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthManager.swift; sourceTree = "<group>"; };
 		2C4585BA27A03CF600CA6561 /* Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Extension.swift; sourceTree = "<group>"; };
 		2C53B8F527A290E100C5E3FC /* RepositoryCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RepositoryCell.swift; sourceTree = "<group>"; };
-		2C53B8F727A2947D00C5E3FC /* RepositoryHeaderTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RepositoryHeaderTableViewCell.swift; sourceTree = "<group>"; };
-		2C53B8F927A294A000C5E3FC /* GeneralTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GeneralTableViewCell.swift; sourceTree = "<group>"; };
+		2C6645BF27AC0A7E00C739AA /* Constants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
+		2C6645C127AC0C5B00C739AA /* RepositoryInfo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RepositoryInfo.swift; sourceTree = "<group>"; };
+		2C6645C327AC0C7500C739AA /* Response.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Response.swift; sourceTree = "<group>"; };
+		2C6645C527AC0C8700C739AA /* ViewModelDataPack.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewModelDataPack.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -113,6 +113,7 @@
 				2C45859927A031E400CA6561 /* SceneDelegate.swift */,
 				2C4585BA27A03CF600CA6561 /* Extension.swift */,
 				2C4585A027A031E500CA6561 /* Assets.xcassets */,
+				2C6645BF27AC0A7E00C739AA /* Constants.swift */,
 			);
 			path = Other;
 			sourceTree = "<group>";
@@ -139,8 +140,9 @@
 		2C4585B327A03A8000CA6561 /* Models */ = {
 			isa = PBXGroup;
 			children = (
-				2C3785EE27A2D1EB00CD821F /* RepoModel.swift */,
-				2C3785F027A2D79100CD821F /* ResponseModel.swift */,
+				2C6645C127AC0C5B00C739AA /* RepositoryInfo.swift */,
+				2C6645C327AC0C7500C739AA /* Response.swift */,
+				2C6645C527AC0C8700C739AA /* ViewModelDataPack.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -149,8 +151,6 @@
 			isa = PBXGroup;
 			children = (
 				2C53B8F527A290E100C5E3FC /* RepositoryCell.swift */,
-				2C53B8F727A2947D00C5E3FC /* RepositoryHeaderTableViewCell.swift */,
-				2C53B8F927A294A000C5E3FC /* GeneralTableViewCell.swift */,
 			);
 			path = Cells;
 			sourceTree = "<group>";
@@ -287,18 +287,18 @@
 			buildActionMask = 2147483647;
 			files = (
 				2C4585BB27A03CF600CA6561 /* Extension.swift in Sources */,
-				2C3785EF27A2D1EB00CD821F /* RepoModel.swift in Sources */,
 				2C4585B527A03B1C00CA6561 /* LoginViewController.swift in Sources */,
 				2C4585B927A03C6600CA6561 /* AuthManager.swift in Sources */,
 				2C45859C27A031E400CA6561 /* HomeViewController.swift in Sources */,
 				2C53B8F627A290E100C5E3FC /* RepositoryCell.swift in Sources */,
 				2C45859827A031E400CA6561 /* AppDelegate.swift in Sources */,
-				2C53B8FA27A294A000C5E3FC /* GeneralTableViewCell.swift in Sources */,
+				2C6645C027AC0A7E00C739AA /* Constants.swift in Sources */,
+				2C6645C427AC0C7500C739AA /* Response.swift in Sources */,
+				2C6645C627AC0C8700C739AA /* ViewModelDataPack.swift in Sources */,
 				2C45859A27A031E400CA6561 /* SceneDelegate.swift in Sources */,
 				2C4585AE27A0385B00CA6561 /* TabBarViewController.swift in Sources */,
+				2C6645C227AC0C5B00C739AA /* RepositoryInfo.swift in Sources */,
 				2C4585AC27A0381100CA6561 /* HistoryViewController.swift in Sources */,
-				2C53B8F827A2947D00C5E3FC /* RepositoryHeaderTableViewCell.swift in Sources */,
-				2C3785F127A2D79100CD821F /* ResponseModel.swift in Sources */,
 				2C129E4B27A3E245000F5E95 /* APICaller.swift in Sources */,
 				2C4585B727A03BA800CA6561 /* DatabaseManager.swift in Sources */,
 			);

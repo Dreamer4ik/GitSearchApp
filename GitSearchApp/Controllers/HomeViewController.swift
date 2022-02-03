@@ -13,9 +13,29 @@ import SafariServices
 class HomeViewController: UIViewController {
     static let shared = HomeViewController()
     
+    private var currentPage = 1
+    private var total = 0
+    private var isFetchInProgress = false
+    private var currentQuery: String = ""
     
-    var allReposData = [ViewModelDataPack]()
-    //    var searchData = [ViewModelDataPack]()
+    var allReposData = [ViewModelDataPack]() {
+        didSet {
+            tableView.reloadData()
+        }
+    }
+    var searchData = [RepositoryInfo]() {
+        didSet {
+            tableView.reloadData()
+        }
+    }
+    
+    var searchDataAll = [RepositoryInfo]() {
+        didSet {
+            tableView.reloadData()
+        }
+    }
+    
+    
     
     private let searchBar:UISearchBar = {
         let bar = UISearchBar()
@@ -51,29 +71,9 @@ class HomeViewController: UIViewController {
         searchBar.delegate = self
         setUpTableView()
         addSubviews()
-        
-        //        getData()
-        getDataSearch()
-        
-        //        print("viewDidLoad allReposData element: \(allReposData)")
-        print("viewDidLoad allReposData elements \(allReposData.count)")
-        print("viewDidLoad allReposData isEmpty \(allReposData.isEmpty)")
+        getData()
         
     }
-    
-    struct Constants{
-        static let gitHubLinkURL = URL(string: "https://api.github.com/")
-        static let allPublicRepoLinkURL = URL(string: "https://api.github.com/repositories")
-        //        static let urlString = "https://api.github.com/repositories"
-        
-        static let urlString = "https://api.github.com/search/repositories?q=Blogapp&page=1&per_page=15"
-        
-    }
-    
-    
-    
-    
-    
     
     private func addSubviews() {
         view.addSubview(searchBar)
@@ -92,71 +92,46 @@ class HomeViewController: UIViewController {
     }
     
     //MARK:  Data
-    //    func getDataSearch() -> [Response]{
-    //
-    //        var responses = [Response]()
-    //        var responses = [SearchResponse]()
-    //        AF.request(Constants.urlString, method: .get).responseDecodable(of: SearchResponse.self, completionHandler: { response in
-    //            if let searchResponse = response.value {
-    //                switch searchResponse.items {
-    //            case .success:
-    //
-    //                    guard let searchResult: SearchResponse = searchResponse.items else { return }
-    //                    print(searchResult.items)
-    //
-    //
-    //
-    //
-    //            case .failure(let error):
-    //                print(error)
-    //            }
-    //            }
-    //        })
-    //        return responses
-    //    }
     
-    
-    
-    func getDataSearch() -> [Response]{
-        
-        var responsesArray = [Response]()
-        
-        AF.request(Constants.urlString, method: .get).responseDecodable(of: SearchResponse.self) { (response) in
+    func getData(){
+        var responses = [Response]()
+        AF.request(Constants.getPublicRepo, method: .get).validate().responseJSON { response in
             switch response.result {
-            case let .success(_):
+            case .success(let value):
+                
+                let json = JSON(value)
                 
                 var pageData = [ViewModelDataPack]()
                 var viewModelsPack = ViewModelDataPack()
-                guard let responseData = response.value else {
-                    return
-                }
-                for item in responseData.items {
-                    /*
-                     id name owner description link
-                     */
+                
+                for index in 0...json.count {
                     var currentResponse = Response()
-                    if let id = item.idStr {
+                    
+                    if let id = json[index]["id"].int {
                         currentResponse.idStr = "\(id)"
                     }
-                    if let name = item.nameSrt {
+                    
+                    if let name = json[index]["name"].string {
                         currentResponse.nameSrt = "\(name)"
                     }
-                    if let owner = item.ownerStr {
+                    
+                    if let owner = json[index]["owner"]["login"].string {
                         currentResponse.ownerStr = "\(owner)"
                     }
-                    if let description = item.descriptionStr {
+                    
+                    if let description = json[index]["description"].string {
                         currentResponse.descriptionStr = "\(description)"
                     }
-                    if let link = item.link {
+                    
+                    if let link = json[index]["html_url"].string  {
                         currentResponse.link = "\(link)"
                     }
-        
-                    responsesArray.append(currentResponse)
+                    
+                    responses.append(currentResponse)
+                    
                 }
                 
-                print(responsesArray.count)
-                
-                for item in responsesArray {
+                for item in responses {
                     viewModelsPack.idStr = item.idStr
                     viewModelsPack.nameSrt = item.nameSrt
                     viewModelsPack.ownerStr = item.ownerStr
@@ -166,80 +141,32 @@ class HomeViewController: UIViewController {
                     
                 }
                 self.allReposData = pageData
-                self.tableView.reloadData()
-                print(self.allReposData)
                 
-            case let .failure(error):
+            case .failure(let error):
+                print(error)
+            }
+        }
+    }
+    
+    func getDataSearch(query: String, page: Int) {
+        let urlSearch = "https://api.github.com/search/repositories?q=\(query)&page=\(page)&per_page=15"
+
+        AF.request(urlSearch, method: .get).responseDecodable(of: SearchResponse.self) { response in
+            switch response.result {
+            case .success(let value):
+  
+                self.searchData = value.items
+                self.searchDataAll.append(contentsOf: self.searchData)
+                
+            case .failure(let error):
                 
                 print(error)
             }
             
+            
         }
-        return responsesArray
     }
-    
-    //    func getData() -> [Response]{
-    //
-    //        var responses = [Response]()
-    //        AF.request(Constants.urlString, method: .get).validate().responseJSON { response in
-    //            switch response.result {
-    //            case .success(let value):
-    //
-    //                let json = JSON(value)
-    //
-    //                var pageData = [ViewModelDataPack]()
-    //                var viewModelsPack = ViewModelDataPack()
-    //
-    //                for index in 0...json.count {
-    //                    var currentResponse = Response()
-    //
-    //                    if let id = json[index]["id"].int {
-    //                        currentResponse.idStr = "\(id)"
-    //                    }
-    //
-    //                    if let name = json[index]["name"].string {
-    //                        currentResponse.nameSrt = "\(name)"
-    //                    }
-    //
-    //                    if let owner = json[index]["owner"]["login"].string {
-    //                        currentResponse.ownerStr = "\(owner)"
-    //                    }
-    //
-    //                    if let description = json[index]["description"].string {
-    //                        currentResponse.descriptionStr = "\(description)"
-    //                    }
-    //
-    //                    if let link = json[index]["html_url"].string  {
-    //                        currentResponse.link = "\(link)"
-    //                    }
-    //
-    //                    responses.append(currentResponse)
-    //
-    //                }
-    //
-    //                print(responses.count)
-    //
-    //                for item in responses {
-    //                    viewModelsPack.idStr = item.idStr
-    //                    viewModelsPack.nameSrt = item.nameSrt
-    //                    viewModelsPack.ownerStr = item.ownerStr
-    //                    viewModelsPack.descriptionStr = item.descriptionStr
-    //                    viewModelsPack.link = item.link
-    //                    pageData.append(viewModelsPack)
-    //
-    //                }
-    //                self.allReposData = pageData
-    //                self.tableView.reloadData()
-    //                print(self.allReposData)
-    //            case .failure(let error):
-    //                print(error)
-    //            }
-    //        }
-    //        return responses
-    //    }
-    
-    
-    
+
     
     ///Log out
     @objc private func didTapLogOut() {
@@ -266,20 +193,35 @@ extension HomeViewController: UISearchBarDelegate {
         }
         
         searchBar.resignFirstResponder()
+        if !text.isEmpty {
+            allReposData.removeAll()
+            
+            currentQuery = text
+            
+            DispatchQueue.main.async {
+                //first code
+                self.getDataSearch(query: text, page: self.currentPage)
+                print("currentPage First THREAD: \(self.currentPage)")
+            }
+            
+            DispatchQueue.main.async {
+                //second code
+                self.currentPage += 1
+                self.getDataSearch(query: text, page: self.currentPage)
+                print("currentPage Second THREAD: \(self.currentPage)")
+            }
+          
+        
+
+        }
+    
         print("Text search: \(text)")
         
-        //TODO: Add func with (query: text)
-//        static let urlString = "https://api.github.com/search/repositories?q=&page=&per_page=15"
-        
-        APICaller.shared.getSearch(query: text, page: 1, endScroll: false) { [weak self] result, _  in
-            switch result {
-                let url = "https://api.github.com/search/repositories?q=\(query)&page=\(page)&per_page=15"
-                
-                print(url)
-            default:
-                print("")
-            }
-        }
+    }
+    
+    func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
+        searchDataAll.removeAll()
+        currentPage = 1
     }
 }
 
@@ -293,7 +235,14 @@ extension HomeViewController: UITableViewDelegate, UITableViewDataSource {
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         
-        return allReposData.count
+        
+        if !allReposData.isEmpty {
+            return allReposData.count
+        }
+        else {
+            return searchDataAll.count
+        }
+        
     }
     
     
@@ -303,15 +252,50 @@ extension HomeViewController: UITableViewDelegate, UITableViewDataSource {
             fatalError()
         }
         
-        guard let id = allReposData[indexPath.row].idStr,
-              let name = allReposData[indexPath.row].nameSrt,
-              let owner = allReposData[indexPath.row].ownerStr,
-              let description = allReposData[indexPath.row].descriptionStr else {
-                  return UITableViewCell()
+        if !allReposData.isEmpty {
+            guard let id = allReposData[indexPath.row].idStr,
+                  let name = allReposData[indexPath.row].nameSrt,
+                  let owner = allReposData[indexPath.row].ownerStr,
+                  let description = allReposData[indexPath.row].descriptionStr else {
+                      return UITableViewCell()
+                  }
+            cell.config(withId: id, name: name, owner: owner, andDescription: description)
+        }
+        else {
+            let id = searchDataAll[indexPath.row].id
+            let name = searchDataAll[indexPath.row].name
+            let owner = searchDataAll[indexPath.row].owner.login
+            let description = searchDataAll[indexPath.row].description ?? ""
+            cell.config(withId: String(id), name: name, owner: owner, andDescription: description)
+            
+            
+            // Reached last row load content
+            if indexPath.row == self.searchDataAll.count - 1 {
+                
+                print("Query :\(currentQuery)")
+                print("currentPage Before PAGINATION :\(currentPage)")
+                
+                DispatchQueue.main.async {
+                    //first code
+                    self.currentPage += 1
+                    self.getDataSearch(query: self.currentQuery, page: self.currentPage)
+                    print("currentPage PAGINATION first THREAD: \(self.currentPage)")
+                }
+                
+                DispatchQueue.main.async {
+                    //second code
+                    self.currentPage += 1
+                    self.getDataSearch(query: self.currentQuery, page: self.currentPage)
+                    print("currentPage  PAGINATION Second THREAD: \(self.currentPage)")
+                }
+                
               }
+            
+            
+
+        }
         
         
-        cell.config(withId: id, name: name, owner: owner, andDescription: description )
         
         return cell
         
@@ -320,14 +304,25 @@ extension HomeViewController: UITableViewDelegate, UITableViewDataSource {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
         
-        let repoData = allReposData[indexPath.row]
         
-        guard let url = URL(string: repoData.link ?? "") else {
-            return
+        
+        if !allReposData.isEmpty {
+            let repoData = allReposData[indexPath.row]
+            guard let url = URL(string: repoData.link ?? "") else {
+                return
+            }
+            let vc = SFSafariViewController(url: url)
+            present(vc, animated: true)
+        }
+        else {
+            let repoData = searchDataAll[indexPath.row]
+            guard let url = URL(string: repoData.html_url ?? "") else {
+                return
+            }
+            let vc = SFSafariViewController(url: url)
+            present(vc, animated: true)
         }
         
-        let vc = SFSafariViewController(url: url)
-        present(vc, animated: true)
     }
     
     
