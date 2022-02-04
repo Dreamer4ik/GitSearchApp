@@ -16,7 +16,6 @@ class HistoryViewController: UIViewController {
     
     
     
-    
     private let filterButton: UIButton = {
         let button = UIButton()
         button.backgroundColor = .gray
@@ -98,6 +97,7 @@ class HistoryViewController: UIViewController {
         self.present(alert, animated: true, completion: nil)
         
     }
+    
     
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()

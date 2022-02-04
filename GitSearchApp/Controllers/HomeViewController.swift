@@ -21,6 +21,9 @@ class HomeViewController: UIViewController {
     private var selectedRow = 0
     private let screenWidth = UIScreen.main.bounds.width - 10
     private let screenHeight = UIScreen.main.bounds.height / 2
+    private var viewedData = [RepositoryInfo]()
+    private var saveId: [Int] = []
+    
     
     
     
@@ -168,6 +171,7 @@ class HomeViewController: UIViewController {
                 self.tableView.scrollToTop()
                 print("selected From low  rate stars to high" )
             }
+
         }))
         
         self.present(alert, animated: true, completion: nil)
@@ -345,6 +349,9 @@ extension HomeViewController: UITableViewDelegate, UITableViewDataSource {
                   let description = allReposData[indexPath.row].descriptionStr else {
                       return UITableViewCell()
                   }
+            
+            cell.accessoryView = CheckMarkView.init()
+            cell.accessoryView?.isHidden = true
             cell.config(withId: id, name: name, owner: owner, andDescription: description)
         }
         else {
@@ -354,6 +361,17 @@ extension HomeViewController: UITableViewDelegate, UITableViewDataSource {
             let description = searchDataAll[indexPath.row].description ?? ""
             let stargazersCount = searchDataAll[indexPath.row].stargazers_count
             print("stargazersCount:\(stargazersCount)")
+            
+            cell.accessoryView = CheckMarkView.init()
+            
+            
+            // Check repo id viewed or not
+            if saveId.contains(obj: id) {
+                cell.accessoryView?.isHidden = false
+            }else {
+                cell.accessoryView?.isHidden = true
+            }
+            
             cell.config(withId: String(id), name: name, owner: owner, andDescription: description)
             
             
@@ -392,10 +410,20 @@ extension HomeViewController: UITableViewDelegate, UITableViewDataSource {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
         
+        //Delete all checkmark
+        //        for row in 0..<tableView.numberOfRows(inSection: indexPath.section) {
+        //            if let cell = tableView.cellForRow(at: IndexPath(row: row, section: indexPath.section)) {
+        //                cell.accessoryType = row == indexPath.row ? .checkmark : .none
+        //            }
+        //        }
         
         
+        // add Dispatch ?
         if !allReposData.isEmpty {
+            
             let repoData = allReposData[indexPath.row]
+            
+            tableView.cellForRow(at: indexPath)?.accessoryView?.isHidden = false
             guard let url = URL(string: repoData.link ?? "") else {
                 return
             }
@@ -403,12 +431,17 @@ extension HomeViewController: UITableViewDelegate, UITableViewDataSource {
             present(vc, animated: true)
         }
         else {
+            
             let repoData = searchDataAll[indexPath.row]
+            
+            tableView.cellForRow(at: indexPath)?.accessoryView?.isHidden = false
             guard let url = URL(string: repoData.html_url ?? "") else {
                 return
             }
             let vc = SFSafariViewController(url: url)
             present(vc, animated: true)
+            viewedData.insert(repoData, at: 0)
+            saveId.append(repoData.id)
         }
         
     }

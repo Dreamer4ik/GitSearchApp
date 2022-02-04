@@ -34,6 +34,7 @@ extension UIView {
     }
 }
 
+/// Check have element in array
 extension Array {
     func contains<T>(obj: T) -> Bool where T: Equatable {
         return !self.filter({$0 as? T == obj}).isEmpty
@@ -66,5 +67,21 @@ extension UITableView {
     
     func hasRowAtIndexPath(indexPath: IndexPath) -> Bool {
         return indexPath.section < self.numberOfSections && indexPath.row < self.numberOfRows(inSection: indexPath.section)
+    }
+}
+
+// Custom CheckMarkView
+class CheckMarkView: UIView {
+    override init(frame: CGRect) {
+        super.init(frame: frame) 
+        let img = UIImage(systemName: "eye.fill")
+        let imageView: UIImageView = UIImageView(image: img)
+        imageView.tintColor = .gray
+        imageView.frame = CGRect(x: 370, y: 150, width: 30, height: 20)
+        self.addSubview(imageView)
+    }
+    
+    required init?(coder aDecoder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
     }
 }
