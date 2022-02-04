@@ -17,6 +17,12 @@ class HomeViewController: UIViewController {
     private var total = 0
     private var isFetchInProgress = false
     private var currentQuery: String = ""
+    private let chooseFilterAction = ["From high rate stars to low", "From low  rate stars to high"]
+    private var selectedRow = 0
+    private let screenWidth = UIScreen.main.bounds.width - 10
+    private let screenHeight = UIScreen.main.bounds.height / 2
+    
+    
     
     var allReposData = [ViewModelDataPack]() {
         didSet {
@@ -36,7 +42,6 @@ class HomeViewController: UIViewController {
     }
     
     
-    
     private let searchBar:UISearchBar = {
         let bar = UISearchBar()
         bar.placeholder = "Search GitHub..."
@@ -44,6 +49,18 @@ class HomeViewController: UIViewController {
         bar.clipsToBounds = true
         bar.backgroundColor = .systemBackground
         return bar
+    }()
+    
+    private let filterButton: UIButton = {
+        let button = UIButton()
+        button.backgroundColor = .gray
+        button.tintColor = .white
+        button.setImage(UIImage(systemName: "arrow.up.arrow.down.circle.fill", withConfiguration: UIImage.SymbolConfiguration(pointSize: 32, weight: .medium)), for: .normal)
+        button.layer.cornerRadius = 30
+        button.layer.shadowColor = UIColor.gray.cgColor
+        button.layer.shadowOpacity = 0.4
+        button.layer.shadowRadius = 10
+        return button
     }()
     
     private let tableView: UITableView = {
@@ -67,6 +84,7 @@ class HomeViewController: UIViewController {
         
         
         view.backgroundColor = .red
+        filterButton.addTarget(self, action: #selector(didTapFilter), for: .touchUpInside)
         
         searchBar.delegate = self
         setUpTableView()
@@ -78,6 +96,7 @@ class HomeViewController: UIViewController {
     private func addSubviews() {
         view.addSubview(searchBar)
         view.addSubview(tableView)
+        view.addSubview(filterButton)
     }
     
     private func setUpTableView() {
@@ -87,8 +106,72 @@ class HomeViewController: UIViewController {
     
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
-        searchBar.frame = CGRect(x: 20, y: view.top + 150, width: view.width - 40, height: 35)
-        tableView.frame = CGRect(x: 0, y: searchBar.bottom + 10, width: view.width, height: view.height)
+        searchBar.frame = CGRect(
+            x: 20,
+            y: view.top + 150,
+            width: view.width - 40,
+            height: 35
+        )
+        tableView.frame = CGRect(
+            x: 0,
+            y: searchBar.bottom + 10,
+            width: view.width,
+            height: view.height
+        )
+        filterButton.frame = CGRect(
+            x: view.frame.width - 88,
+            y: view.frame.height - 88 - view.safeAreaInsets.bottom,
+            width: 60,
+            height: 60
+        )
+    }
+    
+    @objc private func didTapFilter() {
+        let vc = UIViewController()
+        vc.preferredContentSize = CGSize(width: screenWidth, height: screenHeight)
+        let pickerView = UIPickerView(frame: CGRect(x: 0, y: 0, width: screenWidth, height:screenHeight))
+        pickerView.dataSource = self
+        pickerView.delegate = self
+        
+        pickerView.selectRow(selectedRow, inComponent: 0, animated: false)
+        
+        vc.view.addSubview(pickerView)
+        pickerView.centerXAnchor.constraint(equalTo: vc.view.centerXAnchor).isActive = true
+        pickerView.centerYAnchor.constraint(equalTo: vc.view.centerYAnchor).isActive = true
+        
+        let alert = UIAlertController(title: "Select Filter", message: "", preferredStyle: .actionSheet)
+        
+        alert.popoverPresentationController?.sourceView = filterButton
+        alert.popoverPresentationController?.sourceRect = filterButton.bounds
+        
+        alert.setValue(vc, forKey: "contentViewController")
+        alert.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: { (UIAlertAction) in
+        }))
+        
+        alert.addAction(UIAlertAction(title: "Select", style: .default, handler: { (UIAlertAction) in
+            self.selectedRow = pickerView.selectedRow(inComponent: 0)
+            
+            let selected = Array(self.chooseFilterAction)[self.selectedRow]
+            
+            if selected.contains("From high rate stars to low") {
+                self.searchDataAll.sort {
+                    $0.stargazers_count > $1.stargazers_count
+                }
+                self.tableView.scrollToTop()
+                
+                print("selected From high rate stars to low" )
+            }
+            if selected.contains("From low  rate stars to high"){
+                self.searchDataAll.sort {
+                    $0.stargazers_count < $1.stargazers_count
+                }
+                self.tableView.scrollToTop()
+                print("selected From low  rate stars to high" )
+            }
+        }))
+        
+        self.present(alert, animated: true, completion: nil)
+        
     }
     
     //MARK:  Data
@@ -150,18 +233,17 @@ class HomeViewController: UIViewController {
     
     func getDataSearch(query: String, page: Int) {
         let urlSearch = "https://api.github.com/search/repositories?q=\(query)&page=\(page)&per_page=15"
-
+        
         AF.request(urlSearch, method: .get).responseDecodable(of: SearchResponse.self) { response in
             switch response.result {
             case .success(let value):
-  
+                
                 self.searchData = value.items
                 
                 self.searchData.sort {
                     $0.stargazers_count > $1.stargazers_count
                 }
                 self.searchDataAll.append(contentsOf: self.searchData)
-                
             case .failure(let error):
                 
                 print(error)
@@ -170,7 +252,7 @@ class HomeViewController: UIViewController {
             
         }
     }
-
+    
     
     ///Log out
     @objc private func didTapLogOut() {
@@ -214,11 +296,11 @@ extension HomeViewController: UISearchBarDelegate {
                 self.getDataSearch(query: text, page: self.currentPage)
                 print("currentPage Second THREAD: \(self.currentPage)")
             }
-          
-        
-
+            
+            
+            
         }
-    
+        
         print("Text search: \(text)")
         
     }
@@ -295,10 +377,10 @@ extension HomeViewController: UITableViewDelegate, UITableViewDataSource {
                     print("currentPage  PAGINATION Second THREAD: \(self.currentPage)")
                 }
                 
-              }
+            }
             
             
-
+            
         }
         
         
@@ -332,5 +414,28 @@ extension HomeViewController: UITableViewDelegate, UITableViewDataSource {
     }
     
     
+    
+}
+
+//MARK: Picker
+extension HomeViewController: UIPickerViewDelegate, UIPickerViewDataSource {
+    func numberOfComponents(in pickerView: UIPickerView) -> Int {
+        return 1
+    }
+    
+    func pickerView(_ pickerView: UIPickerView, numberOfRowsInComponent component: Int) -> Int {
+        return chooseFilterAction.count
+    }
+    
+    func pickerView(_ pickerView: UIPickerView, rowHeightForComponent component: Int) -> CGFloat {
+        return 60
+    }
+    
+    func pickerView(_ pickerView: UIPickerView, viewForRow row: Int, forComponent component: Int, reusing view: UIView?) -> UIView {
+        let label = UILabel(frame: CGRect(x: 0, y: 0, width: screenWidth, height: 30))
+        label.text = Array(chooseFilterAction)[row]
+        label.sizeToFit()
+        return label
+    }
     
 }
