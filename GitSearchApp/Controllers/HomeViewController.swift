@@ -9,6 +9,7 @@ import UIKit
 import Alamofire
 import SwiftyJSON
 import SafariServices
+import RealmSwift
 
 class HomeViewController: UIViewController {
     static let shared = HomeViewController()
@@ -23,6 +24,9 @@ class HomeViewController: UIViewController {
     private let screenHeight = UIScreen.main.bounds.height / 2
     private var viewedData = [RepositoryInfo]()
     private var saveId: [Int] = []
+    
+    //MARK: REALM
+    var currentItem: RepositoryRealm?
     
     
     
@@ -94,6 +98,15 @@ class HomeViewController: UIViewController {
         addSubviews()
         getData()
         
+        
+        //MARK: REALM
+        let path = DatabaseManager.shared.database.configuration.fileURL?.path
+        print("Realm Path: \(String(describing: path))")
+        
+        
+//                DatabaseManager.shared.deleteAllFromDatabase()
+        
+        print("PRINT REALM OBJ: --- \(DatabaseManager.shared.getDataFromDB())")
     }
     
     private func addSubviews() {
@@ -171,13 +184,12 @@ class HomeViewController: UIViewController {
                 self.tableView.scrollToTop()
                 print("selected From low  rate stars to high" )
             }
-
+            
         }))
         
         self.present(alert, animated: true, completion: nil)
         
     }
-    
     //MARK:  Data
     
     func getData(){
@@ -442,6 +454,18 @@ extension HomeViewController: UITableViewDelegate, UITableViewDataSource {
             present(vc, animated: true)
             viewedData.insert(repoData, at: 0)
             saveId.append(repoData.id)
+            //Realm
+            let item = RepositoryRealm()
+            item.id = repoData.id
+            item.name = repoData.name
+            item.owner = repoData.owner.login
+            item.descriptionRepo = repoData.description
+            item.html_url = repoData.html_url
+            item.stargazers_count = repoData.stargazers_count
+            DatabaseManager.shared.addData(object: item)
+
+            print("PRINT REALM OBJ2: --- \(DatabaseManager.shared.getDataFromDB())")
+            
         }
         
     }

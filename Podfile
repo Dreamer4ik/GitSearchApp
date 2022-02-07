@@ -10,6 +10,7 @@ target 'GitSearchApp' do
 # Firebase
 pod 'Alamofire'
 pod 'SwiftyJSON'
+pod 'RealmSwift'
 
 
 

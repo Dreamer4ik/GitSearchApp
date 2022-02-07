@@ -20,6 +20,7 @@
 		2C4585B927A03C6600CA6561 /* AuthManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2C4585B827A03C6600CA6561 /* AuthManager.swift */; };
 		2C4585BB27A03CF600CA6561 /* Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2C4585BA27A03CF600CA6561 /* Extension.swift */; };
 		2C53B8F627A290E100C5E3FC /* RepositoryCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2C53B8F527A290E100C5E3FC /* RepositoryCell.swift */; };
+		2C5F2C7D27B15CC70097B21A /* RepositoryRealm.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2C5F2C7C27B15CC70097B21A /* RepositoryRealm.swift */; };
 		2C6645C027AC0A7E00C739AA /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2C6645BF27AC0A7E00C739AA /* Constants.swift */; };
 		2C6645C227AC0C5B00C739AA /* RepositoryInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2C6645C127AC0C5B00C739AA /* RepositoryInfo.swift */; };
 		2C6645C427AC0C7500C739AA /* Response.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2C6645C327AC0C7500C739AA /* Response.swift */; };
@@ -46,6 +47,7 @@
 		2C4585B827A03C6600CA6561 /* AuthManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthManager.swift; sourceTree = "<group>"; };
 		2C4585BA27A03CF600CA6561 /* Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Extension.swift; sourceTree = "<group>"; };
 		2C53B8F527A290E100C5E3FC /* RepositoryCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RepositoryCell.swift; sourceTree = "<group>"; };
+		2C5F2C7C27B15CC70097B21A /* RepositoryRealm.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RepositoryRealm.swift; sourceTree = "<group>"; };
 		2C6645BF27AC0A7E00C739AA /* Constants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
 		2C6645C127AC0C5B00C739AA /* RepositoryInfo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RepositoryInfo.swift; sourceTree = "<group>"; };
 		2C6645C327AC0C7500C739AA /* Response.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Response.swift; sourceTree = "<group>"; };
@@ -143,6 +145,7 @@
 				2C6645C127AC0C5B00C739AA /* RepositoryInfo.swift */,
 				2C6645C327AC0C7500C739AA /* Response.swift */,
 				2C6645C527AC0C8700C739AA /* ViewModelDataPack.swift */,
+				2C5F2C7C27B15CC70097B21A /* RepositoryRealm.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -287,6 +290,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				2C4585BB27A03CF600CA6561 /* Extension.swift in Sources */,
+				2C5F2C7D27B15CC70097B21A /* RepositoryRealm.swift in Sources */,
 				2C4585B527A03B1C00CA6561 /* LoginViewController.swift in Sources */,
 				2C4585B927A03C6600CA6561 /* AuthManager.swift in Sources */,
 				2C45859C27A031E400CA6561 /* HomeViewController.swift in Sources */,
