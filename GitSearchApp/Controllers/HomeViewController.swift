@@ -103,10 +103,16 @@ class HomeViewController: UIViewController {
         let path = DatabaseManager.shared.database.configuration.fileURL?.path
         print("Realm Path: \(String(describing: path))")
         
+        //Delete all
+//        DatabaseManager.shared.deleteAllFromDatabase()
         
-//                DatabaseManager.shared.deleteAllFromDatabase()
+
+       
+      
         
         print("PRINT REALM OBJ: --- \(DatabaseManager.shared.getDataFromDB())")
+        
+        print("PRINT REALM ID1 : \(DatabaseManager.shared.getIdFromDB())")
     }
     
     private func addSubviews() {
@@ -378,7 +384,7 @@ extension HomeViewController: UITableViewDelegate, UITableViewDataSource {
             
             
             // Check repo id viewed or not
-            if saveId.contains(obj: id) {
+            if DatabaseManager.shared.getIdFromDB().contains(obj: id) {
                 cell.accessoryView?.isHidden = false
             }else {
                 cell.accessoryView?.isHidden = true
@@ -454,6 +460,9 @@ extension HomeViewController: UITableViewDelegate, UITableViewDataSource {
             present(vc, animated: true)
             viewedData.insert(repoData, at: 0)
             saveId.append(repoData.id)
+            
+           
+        
             //Realm
             let item = RepositoryRealm()
             item.id = repoData.id
@@ -462,10 +471,17 @@ extension HomeViewController: UITableViewDelegate, UITableViewDataSource {
             item.descriptionRepo = repoData.description
             item.html_url = repoData.html_url
             item.stargazers_count = repoData.stargazers_count
-            DatabaseManager.shared.addData(object: item)
-
-            print("PRINT REALM OBJ2: --- \(DatabaseManager.shared.getDataFromDB())")
+            //  Check if exist ID repo
+            if !DatabaseManager.shared.getIdFromDB().contains(obj: item.id) {
+                
+                DatabaseManager.shared.addData(object: item)
+                print("Update DATE: \(item.updated)")
+                
+            }
             
+            
+            print("PRINT REALM OBJ2: --- \(DatabaseManager.shared.getDataFromDB())")
+            print("PRINT REALM ID2 : \(DatabaseManager.shared.getIdFromDB())")
         }
         
     }

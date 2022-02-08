@@ -10,11 +10,10 @@ import UIKit
 import RealmSwift
 
 public class DatabaseManager {
-    
+
     public var   database:Realm
-    
-    //    public lazy var database = try! Realm()
     static let   shared = DatabaseManager()
+    
     private init() {
         database = try! Realm()
     }
@@ -22,6 +21,7 @@ public class DatabaseManager {
     
     func getDataFromDB() ->   Results<RepositoryRealm> {
         let results: Results<RepositoryRealm> =   database.objects(RepositoryRealm.self)
+        
         return results
     }
     func addData(object: RepositoryRealm)   {
@@ -42,4 +42,14 @@ public class DatabaseManager {
             database.delete(object)
         }
     }
+    
+    func getIdFromDB() -> [Int] {
+        let results =   database.objects(RepositoryRealm.self)
+        var saveId:[Int] = []
+        for value in results {
+            saveId.append(value.id)
+        }
+        return saveId
+    }
+    
 }

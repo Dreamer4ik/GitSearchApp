@@ -34,6 +34,15 @@ extension UIView {
     }
 }
 
+extension UIViewController{
+   var navigationBarBottom: CGFloat {
+       let height = self.navigationController?.navigationBar.frame.height ?? 0.0
+       let originY = self.navigationController?.navigationBar.frame.origin.y ?? 0.0
+       return  height + originY
+       
+   }
+}
+
 /// Check have element in array
 extension Array {
     func contains<T>(obj: T) -> Bool where T: Equatable {

@@ -19,6 +19,8 @@ class RepositoryRealm : Object {
     
     @objc dynamic var stargazers_count: Int = 0
     
+    @objc dynamic var updated = Date()
+    
     //    override static func primaryKey() -> String? {
     //        return "id"
     //    }
