@@ -67,6 +67,7 @@ class HomeViewController: UIViewController {
         button.layer.shadowColor = UIColor.gray.cgColor
         button.layer.shadowOpacity = 0.4
         button.layer.shadowRadius = 10
+        button.isHidden = true
         return button
     }()
     
@@ -102,13 +103,6 @@ class HomeViewController: UIViewController {
         //MARK: REALM
         let path = DatabaseManager.shared.database.configuration.fileURL?.path
         print("Realm Path: \(String(describing: path))")
-        
-        //Delete all
-//        DatabaseManager.shared.deleteAllFromDatabase()
-        
-
-       
-      
         
         print("PRINT REALM OBJ: --- \(DatabaseManager.shared.getDataFromDB())")
         
@@ -147,6 +141,11 @@ class HomeViewController: UIViewController {
             height: 60
         )
     }
+
+    override func viewWillAppear(_ animated: Bool) {
+        tableView.reloadData()
+    }
+    
     
     @objc private func didTapFilter() {
         let vc = UIViewController()
@@ -261,11 +260,8 @@ class HomeViewController: UIViewController {
             case .success(let value):
                 
                 self.searchData = value.items
-                
-                self.searchData.sort {
-                    $0.stargazers_count > $1.stargazers_count
-                }
                 self.searchDataAll.append(contentsOf: self.searchData)
+                
             case .failure(let error):
                 
                 print(error)
@@ -303,7 +299,7 @@ extension HomeViewController: UISearchBarDelegate {
         searchBar.resignFirstResponder()
         if !text.isEmpty {
             allReposData.removeAll()
-            
+            filterButton.isHidden = false
             currentQuery = text
             
             DispatchQueue.main.async {
@@ -369,7 +365,13 @@ extension HomeViewController: UITableViewDelegate, UITableViewDataSource {
                   }
             
             cell.accessoryView = CheckMarkView.init()
-            cell.accessoryView?.isHidden = true
+            // Check repo id viewed or not
+            if DatabaseManager.shared.getIdFromDB().contains(obj: Int(id)) {
+                cell.accessoryView?.isHidden = false
+            }else {
+                cell.accessoryView?.isHidden = true
+            }
+            
             cell.config(withId: id, name: name, owner: owner, andDescription: description)
         }
         else {
@@ -442,14 +444,30 @@ extension HomeViewController: UITableViewDelegate, UITableViewDataSource {
             let repoData = allReposData[indexPath.row]
             
             tableView.cellForRow(at: indexPath)?.accessoryView?.isHidden = false
+            
             guard let url = URL(string: repoData.link ?? "") else {
                 return
             }
             let vc = SFSafariViewController(url: url)
             present(vc, animated: true)
+            
+            
+            let item = RepositoryRealm()
+            item.id = Int(repoData.idStr) ?? -1
+            item.name = repoData.nameSrt
+            item.owner = repoData.ownerStr
+            item.descriptionRepo = repoData.descriptionStr
+            item.html_url = repoData.link
+//            item.stargazers_count = repoData.star
+            //  Check if exist ID repo
+            if !DatabaseManager.shared.getIdFromDB().contains(obj: item.id) {
+                
+                DatabaseManager.shared.addData(object: item)
+                print("Update DATE: \(item.updated)")
+                
+            }
         }
         else {
-            
             let repoData = searchDataAll[indexPath.row]
             
             tableView.cellForRow(at: indexPath)?.accessoryView?.isHidden = false

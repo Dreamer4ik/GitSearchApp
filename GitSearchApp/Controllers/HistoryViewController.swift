@@ -14,15 +14,9 @@ class HistoryViewController: UIViewController {
     let results = DatabaseManager.shared.database.objects(RepositoryRealm.self)
     
     
-    private let chooseFilterAction = ["From high rate stars to low", "From low  rate stars to high"]
-    var selectedRow = 0
-    let screenWidth = UIScreen.main.bounds.width - 10
-    let screenHeight = UIScreen.main.bounds.height / 2
-    
     private let tableView: UITableView = {
         let table = UITableView()
         table.register(RepositoryCell.self, forCellReuseIdentifier: RepositoryCell.identifier)
-        //        table.backgroundColor = .red
         return table
     }()
     
@@ -72,10 +66,8 @@ class HistoryViewController: UIViewController {
         tableView.delegate = self
         tableView.dataSource = self
         
-       
+        navigationItem.rightBarButtonItem = UIBarButtonItem(image: UIImage(systemName: "trash"), style: .done, target: self, action: #selector(didTapClear))
         self.tableView.contentInset.bottom = self.tabBarController?.tabBar.frame.height ?? 0
-        
-        filterButton.addTarget(self, action: #selector(didTapFilter), for: .touchUpInside)
         addSubviews()
         
         
@@ -105,55 +97,6 @@ class HistoryViewController: UIViewController {
         view.addSubview(tableView)
         view.addSubview(repositoryLabel)
         view.addSubview(noRepositoryLabel)
-    }
-    
-    
-    @objc private func didTapFilter() {
-        let vc = UIViewController()
-        vc.preferredContentSize = CGSize(width: screenWidth, height: screenHeight)
-        let pickerView = UIPickerView(frame: CGRect(x: 0, y: 0, width: screenWidth, height:screenHeight))
-        pickerView.dataSource = self
-        pickerView.delegate = self
-        
-        pickerView.selectRow(selectedRow, inComponent: 0, animated: false)
-        
-        vc.view.addSubview(pickerView)
-        pickerView.centerXAnchor.constraint(equalTo: vc.view.centerXAnchor).isActive = true
-        pickerView.centerYAnchor.constraint(equalTo: vc.view.centerYAnchor).isActive = true
-        
-        let alert = UIAlertController(title: "Select Filter", message: "", preferredStyle: .actionSheet)
-        
-        alert.popoverPresentationController?.sourceView = filterButton
-        alert.popoverPresentationController?.sourceRect = filterButton.bounds
-        
-        alert.setValue(vc, forKey: "contentViewController")
-        alert.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: { (UIAlertAction) in
-        }))
-        
-        alert.addAction(UIAlertAction(title: "Select", style: .default, handler: { (UIAlertAction) in
-            self.selectedRow = pickerView.selectedRow(inComponent: 0)
-            
-            let selected = Array(self.chooseFilterAction)[self.selectedRow]
-            
-            if selected.contains("From high rate stars to low") {
-                //                self.searchDataAll.sort {
-                //                            $0.stargazers_count > $1.stargazers_count
-                //                        }
-                //                self.tableView.scrollToTop()
-                
-                print("selected From high rate stars to low" )
-            }
-            if selected.contains("From low  rate stars to high"){
-                //                self.searchDataAll.sort {
-                //                            $0.stargazers_count < $1.stargazers_count
-                //                        }
-                //                self.tableView.scrollToTop()
-                print("selected From low  rate stars to high" )
-            }
-        }))
-        
-        self.present(alert, animated: true, completion: nil)
-        
     }
     
     
@@ -189,6 +132,18 @@ class HistoryViewController: UIViewController {
         )
         
         
+    }
+    
+    @objc private func didTapClear() {
+        let sheet = UIAlertController(title: "Clear", message: "Are you wanna clear history ?", preferredStyle: .actionSheet)
+        sheet.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: nil))
+        sheet.addAction(UIAlertAction(title: "Clear All", style: .destructive, handler: { _ in
+            
+            DatabaseManager.shared.deleteAllFromDatabase()
+            self.tableView.reloadData()
+            self.noRepositoryLabel.isHidden = false
+        }))
+        present(sheet, animated: true, completion: nil)
     }
     
     
@@ -243,34 +198,29 @@ extension HistoryViewController: UITableViewDelegate, UITableViewDataSource {
         }
         let vc = SFSafariViewController(url: url)
         present(vc, animated: true)
-     
-    }
-    
-    
-    
-    
-}
-
-
-extension HistoryViewController: UIPickerViewDelegate, UIPickerViewDataSource {
-    func numberOfComponents(in pickerView: UIPickerView) -> Int {
-        return 1
-    }
-    
-    func pickerView(_ pickerView: UIPickerView, numberOfRowsInComponent component: Int) -> Int {
-        return chooseFilterAction.count
-    }
-    
-    func pickerView(_ pickerView: UIPickerView, rowHeightForComponent component: Int) -> CGFloat {
-        return 60
-    }
-    
-    func pickerView(_ pickerView: UIPickerView, viewForRow row: Int, forComponent component: Int, reusing view: UIView?) -> UIView {
         
-        let label = UILabel(frame: CGRect(x: 0, y: 0, width: screenWidth, height: 30))
-        label.text = Array(chooseFilterAction)[row]
-        label.sizeToFit()
-        return label
+    }
+    
+    func tableView(_ tableView: UITableView, editingStyleForRowAt indexPath: IndexPath) -> UITableViewCell.EditingStyle {
+        return .delete
+    }
+    
+    
+    func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
+        
+        
+        if editingStyle == .delete {
+            
+            let reverseResult = results.sorted(byKeyPath: "updated", ascending: false)
+            tableView.beginUpdates()
+            
+            
+            DatabaseManager.shared.deleteFromDb(object: reverseResult[indexPath.row])
+            tableView.deleteRows(at: [indexPath], with: .left)
+            
+            tableView.endUpdates()
+        }
     }
     
 }
+

@@ -26,8 +26,6 @@ public class DatabaseManager {
     }
     func addData(object: RepositoryRealm)   {
         try! database.write {
-            //            database.add(object, update: .all)
-            //            database.add(object, update: true)
             database.add(object)
             print("Added new object")
         }
@@ -40,6 +38,7 @@ public class DatabaseManager {
     func deleteFromDb(object: RepositoryRealm)   {
         try!   database.write {
             database.delete(object)
+            print("Delete object ")
         }
     }
     
