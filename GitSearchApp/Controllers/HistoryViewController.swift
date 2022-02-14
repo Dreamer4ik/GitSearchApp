@@ -11,7 +11,7 @@ import SafariServices
 
 class HistoryViewController: UIViewController {
     
-    let results = DatabaseManager.shared.database.objects(RepositoryRealm.self)
+   private let results = DatabaseManager.shared.database.objects(RepositoryRealm.self)
     
     
     private let tableView: UITableView = {
@@ -75,13 +75,7 @@ class HistoryViewController: UIViewController {
     }
     
     override func viewWillAppear(_ animated: Bool) {
-        if DatabaseManager.shared.getDataFromDB().count == 21{
-            guard let first = results.first else {
-                return
-            }
-            
-            DatabaseManager.shared.deleteFromDb(object: first)
-        }
+      
         tableView.reloadData()
         if results.count == 0 {
             noRepositoryLabel.isHidden = false

@@ -24,6 +24,7 @@ class HomeViewController: UIViewController {
     private let screenHeight = UIScreen.main.bounds.height / 2
     private var viewedData = [RepositoryInfo]()
     private var saveId: [Int] = []
+    private let results = DatabaseManager.shared.database.objects(RepositoryRealm.self)
     
     //MARK: REALM
     var currentItem: RepositoryRealm?
@@ -36,11 +37,7 @@ class HomeViewController: UIViewController {
             tableView.reloadData()
         }
     }
-    var searchData = [RepositoryInfo]() {
-        didSet {
-            tableView.reloadData()
-        }
-    }
+    
     
     var searchDataAll = [RepositoryInfo]() {
         didSet {
@@ -54,7 +51,8 @@ class HomeViewController: UIViewController {
         bar.placeholder = "Search GitHub..."
         bar.layer.cornerRadius = 8
         bar.clipsToBounds = true
-        bar.backgroundColor = .systemBackground
+        bar.backgroundColor = .white
+        bar.searchTextField.backgroundColor = UIColor.white
         return bar
     }()
     
@@ -123,9 +121,9 @@ class HomeViewController: UIViewController {
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
         searchBar.frame = CGRect(
-            x: 20,
+            x: 10,
             y: view.top + 150,
-            width: view.width - 40,
+            width: view.width - 20,
             height: 35
         )
         tableView.frame = CGRect(
@@ -141,7 +139,7 @@ class HomeViewController: UIViewController {
             height: 60
         )
     }
-
+    
     override func viewWillAppear(_ animated: Bool) {
         tableView.reloadData()
     }
@@ -255,12 +253,15 @@ class HomeViewController: UIViewController {
     func getDataSearch(query: String, page: Int) {
         let urlSearch = "https://api.github.com/search/repositories?q=\(query)&page=\(page)&per_page=15"
         
-        AF.request(urlSearch, method: .get).responseDecodable(of: SearchResponse.self) { response in
+        AF.request(urlSearch, method: .get).responseDecodable(of: SearchResponse.self) { [weak self] response in
+            guard let strongSelf = self else {
+                return
+            }
             switch response.result {
             case .success(let value):
                 
-                self.searchData = value.items
-                self.searchDataAll.append(contentsOf: self.searchData)
+                
+                strongSelf.searchDataAll.append(contentsOf: value.items)
                 
             case .failure(let error):
                 
@@ -268,6 +269,23 @@ class HomeViewController: UIViewController {
             }
             
             
+        }
+    }
+    
+    // Load
+    private func loader() {
+        DispatchQueue.main.async {
+            //first code
+            self.currentPage += 1
+            self.getDataSearch(query: self.currentQuery, page: self.currentPage)
+            print("currentPage PAGINATION first THREAD: \(self.currentPage)")
+        }
+        
+        DispatchQueue.main.async {
+            //second code
+            self.currentPage += 1
+            self.getDataSearch(query: self.currentQuery, page: self.currentPage)
+            print("currentPage  PAGINATION Second THREAD: \(self.currentPage)")
         }
     }
     
@@ -295,6 +313,8 @@ extension HomeViewController: UISearchBarDelegate {
         guard let text = searchBar.text, !text.replacingOccurrences(of: " ", with: "").isEmpty else {
             return
         }
+        
+        searchBar.showsCancelButton = true
         
         searchBar.resignFirstResponder()
         if !text.isEmpty {
@@ -363,8 +383,11 @@ extension HomeViewController: UITableViewDelegate, UITableViewDataSource {
                   let description = allReposData[indexPath.row].descriptionStr else {
                       return UITableViewCell()
                   }
-            
-            cell.accessoryView = CheckMarkView.init()
+            cell.accessoryView = CheckMarkView()
+//            cell.accessoryView = CheckMarkView.init(frame: CGRect(x: view.center.x  , y: view.center.y , width: 30, height: 20))
+                        //            cell.accessoryView = CheckMarkView.init(frame: CGRect(x: 0, y: 0, width: 60, height: 50))
+            cell.accessoryView?.frame = CGRect(x: cell.center.x + 10, y: cell.center.y + 70 , width: 30, height: 20)
+            //            cell.accessoryView?.frame = CGRect(x: cell.center.x, y: cell.center.y, width: 0, height: 0)
             // Check repo id viewed or not
             if DatabaseManager.shared.getIdFromDB().contains(obj: Int(id)) {
                 cell.accessoryView?.isHidden = false
@@ -383,7 +406,7 @@ extension HomeViewController: UITableViewDelegate, UITableViewDataSource {
             print("stargazersCount:\(stargazersCount)")
             
             cell.accessoryView = CheckMarkView.init()
-            
+            cell.accessoryView?.frame = CGRect(x: cell.center.x + 10, y: cell.center.y + 70 , width: 30, height: 20)
             
             // Check repo id viewed or not
             if DatabaseManager.shared.getIdFromDB().contains(obj: id) {
@@ -401,19 +424,8 @@ extension HomeViewController: UITableViewDelegate, UITableViewDataSource {
                 print("Query :\(currentQuery)")
                 print("currentPage Before PAGINATION :\(currentPage)")
                 
-                DispatchQueue.main.async {
-                    //first code
-                    self.currentPage += 1
-                    self.getDataSearch(query: self.currentQuery, page: self.currentPage)
-                    print("currentPage PAGINATION first THREAD: \(self.currentPage)")
-                }
                 
-                DispatchQueue.main.async {
-                    //second code
-                    self.currentPage += 1
-                    self.getDataSearch(query: self.currentQuery, page: self.currentPage)
-                    print("currentPage  PAGINATION Second THREAD: \(self.currentPage)")
-                }
+                loader()
                 
             }
             
@@ -458,12 +470,25 @@ extension HomeViewController: UITableViewDelegate, UITableViewDataSource {
             item.owner = repoData.ownerStr
             item.descriptionRepo = repoData.descriptionStr
             item.html_url = repoData.link
-//            item.stargazers_count = repoData.star
+            //            item.stargazers_count = repoData.star
+            
+            
             //  Check if exist ID repo
             if !DatabaseManager.shared.getIdFromDB().contains(obj: item.id) {
                 
                 DatabaseManager.shared.addData(object: item)
                 print("Update DATE: \(item.updated)")
+                print("Repository COUNT object: \(results.count)")
+                //Delete if object more 20
+                if results.count == 21{
+                    guard let first = results.first else {
+                        return
+                    }
+                    
+                    DatabaseManager.shared.deleteFromDb(object: first)
+                    
+                    print("Repository COUNT after delete object: \(results.count)")
+                }
                 
             }
         }
@@ -479,8 +504,8 @@ extension HomeViewController: UITableViewDelegate, UITableViewDataSource {
             viewedData.insert(repoData, at: 0)
             saveId.append(repoData.id)
             
-           
-        
+            
+            
             //Realm
             let item = RepositoryRealm()
             item.id = repoData.id
@@ -494,6 +519,18 @@ extension HomeViewController: UITableViewDelegate, UITableViewDataSource {
                 
                 DatabaseManager.shared.addData(object: item)
                 print("Update DATE: \(item.updated)")
+                print("Repository COUNT object: \(results.count)")
+                
+                //Delete if object more 20
+                if results.count == 21{
+                    guard let first = results.first else {
+                        return
+                    }
+                    
+                    DatabaseManager.shared.deleteFromDb(object: first)
+                    
+                    print("Repository COUNT after delete object: \(results.count)")
+                }
                 
             }
             
