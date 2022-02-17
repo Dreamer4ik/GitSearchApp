@@ -13,10 +13,12 @@ import RealmSwift
 
 class HomeViewController: UIViewController {
     static let shared = HomeViewController()
-    
     private var currentPage = 1
     private var total = 0
+    
+    private let pageSize = 15
     private var isFetchInProgress = false
+//    private var isReload = false
     private var currentQuery: String = ""
     private let chooseFilterAction = ["From high rate stars to low", "From low  rate stars to high"]
     private var selectedRow = 0
@@ -88,7 +90,6 @@ class HomeViewController: UIViewController {
         navigationItem.standardAppearance = barAppearance
         navigationItem.scrollEdgeAppearance = barAppearance
         
-        
         view.backgroundColor = .red
         filterButton.addTarget(self, action: #selector(didTapFilter), for: .touchUpInside)
         
@@ -111,6 +112,7 @@ class HomeViewController: UIViewController {
         view.addSubview(searchBar)
         view.addSubview(tableView)
         view.addSubview(filterButton)
+        
     }
     
     private func setUpTableView() {
@@ -251,7 +253,7 @@ class HomeViewController: UIViewController {
     }
     
     func getDataSearch(query: String, page: Int) {
-        let urlSearch = "https://api.github.com/search/repositories?q=\(query)&page=\(page)&per_page=15"
+        let urlSearch = "https://api.github.com/search/repositories?q=\(query)&page=\(page)&per_page=\(pageSize)"
         
         AF.request(urlSearch, method: .get).responseDecodable(of: SearchResponse.self) { [weak self] response in
             guard let strongSelf = self else {
@@ -272,21 +274,42 @@ class HomeViewController: UIViewController {
         }
     }
     
+    
+    // MARK: CONFIG LOADER
     // Load
     private func loader() {
+        
+        guard !isFetchInProgress else {
+            return
+        }
+        
+
+        
+        isFetchInProgress = true
+        
         DispatchQueue.main.async {
             //first code
+      
+            self.isFetchInProgress = false
             self.currentPage += 1
-            self.getDataSearch(query: self.currentQuery, page: self.currentPage)
+            self.getDataSearch(query: self.currentQuery, page: self.currentPage )
             print("currentPage PAGINATION first THREAD: \(self.currentPage)")
+            
+            
+            
+            
         }
         
         DispatchQueue.main.async {
             //second code
+            self.isFetchInProgress = false
             self.currentPage += 1
             self.getDataSearch(query: self.currentQuery, page: self.currentPage)
             print("currentPage  PAGINATION Second THREAD: \(self.currentPage)")
+            
+            
         }
+     
     }
     
     
@@ -314,7 +337,13 @@ extension HomeViewController: UISearchBarDelegate {
             return
         }
         
-        searchBar.showsCancelButton = true
+        
+        searchBar.setShowsCancelButton(true, animated: true)
+        
+        if let cancelButton = searchBar.value(forKey: "cancelButton") as? UIButton {
+            cancelButton.tintColor = .blue
+            cancelButton.setTitleColor(.systemBlue, for: .normal)
+        }
         
         searchBar.resignFirstResponder()
         if !text.isEmpty {
@@ -347,11 +376,18 @@ extension HomeViewController: UISearchBarDelegate {
         searchDataAll.removeAll()
         currentPage = 1
     }
+    
+    override func touchesCancelled(_ touches: Set<UITouch>, with event: UIEvent?) {
+        searchBar.text = ""
+        searchBar.showsCancelButton = false
+        searchBar.endEditing(true)
+    }
+    
 }
 
-//MARK: Table View
+//MARK: Table View, UIScrollViewDelegate
 
-extension HomeViewController: UITableViewDelegate, UITableViewDataSource {
+extension HomeViewController: UITableViewDelegate, UITableViewDataSource, UIScrollViewDelegate {
     
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         return 190
@@ -384,10 +420,7 @@ extension HomeViewController: UITableViewDelegate, UITableViewDataSource {
                       return UITableViewCell()
                   }
             cell.accessoryView = CheckMarkView()
-//            cell.accessoryView = CheckMarkView.init(frame: CGRect(x: view.center.x  , y: view.center.y , width: 30, height: 20))
-                        //            cell.accessoryView = CheckMarkView.init(frame: CGRect(x: 0, y: 0, width: 60, height: 50))
             cell.accessoryView?.frame = CGRect(x: cell.center.x + 10, y: cell.center.y + 70 , width: 30, height: 20)
-            //            cell.accessoryView?.frame = CGRect(x: cell.center.x, y: cell.center.y, width: 0, height: 0)
             // Check repo id viewed or not
             if DatabaseManager.shared.getIdFromDB().contains(obj: Int(id)) {
                 cell.accessoryView?.isHidden = false
@@ -417,17 +450,19 @@ extension HomeViewController: UITableViewDelegate, UITableViewDataSource {
             
             cell.config(withId: String(id), name: name, owner: owner, andDescription: description)
             
-            
+            // Fix
             // Reached last row load content
-            if indexPath.row == self.searchDataAll.count - 1 {
-                
-                print("Query :\(currentQuery)")
-                print("currentPage Before PAGINATION :\(currentPage)")
-                
-                
-                loader()
-                
-            }
+            
+            
+            //            if indexPath.row == self.searchDataAll.count - 1 {
+            //
+            //                print("Query :\(currentQuery)")
+            //                print("currentPage Before PAGINATION :\(currentPage)")
+            //
+            //
+            //                loader()
+            //
+            //            }
             
             
             
@@ -450,7 +485,6 @@ extension HomeViewController: UITableViewDelegate, UITableViewDataSource {
         //        }
         
         
-        // add Dispatch ?
         if !allReposData.isEmpty {
             
             let repoData = allReposData[indexPath.row]
@@ -541,6 +575,36 @@ extension HomeViewController: UITableViewDelegate, UITableViewDataSource {
         
     }
     
+    func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
+        if indexPath.section == tableView.numberOfSections - 1 &&
+              indexPath.row == tableView.numberOfRows(inSection: indexPath.section) - 1 {
+              // Notify interested parties that end has been
+            if !currentQuery.isEmpty && !isFetchInProgress {
+                loader()
+            }
+               
+          }
+    }
+    
+    // MARK: scrollViewDidScroll LOADING
+    // fetchProgress, reloading
+    // Add size
+//    func scrollViewDidScroll(_ scrollView: UIScrollView) {
+//        let height = scrollView.frame.size.height
+//        let contentYoffset = scrollView.contentOffset.y
+//        let distanceFromBottom = scrollView.contentSize.height - contentYoffset
+//
+//        if distanceFromBottom < height && !isFetchInProgress {
+//
+//            // load data
+//            print(" you reached end of the table")
+//            loader()
+//
+//
+//
+//        }
+//    }
+    
     
     
 }
@@ -567,3 +631,4 @@ extension HomeViewController: UIPickerViewDelegate, UIPickerViewDataSource {
     }
     
 }
+
